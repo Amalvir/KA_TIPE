@@ -23,5 +23,5 @@ MSIT=
 def affichage_de_la_situation_initiale(teta):
     X=[0,l,l,0,0,l,l,0]
     Y=[0,0,b,b,0,0,b,b]
-    Z=[0]
+    
     
