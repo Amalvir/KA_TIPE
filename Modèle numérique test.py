@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-##Objectifs:
-#Obtenir la position, et le volume immergé en fonction de l'angle téta
+## Objectifs:
+# Obtenir la position, et le volume immergé en fonction de l'angle téta
 
-#Obtenir le MSIT en fonction des positions relatives des centres de carène et de gravité et du Volume:
+# Obtenir le MSIT en fonction des positions relatives des centres de carène et de gravité et du Volume:
 """ On modélise notre engin flottant par un pavé de profondeur b, de hauteur h, de largeur l """
 
 h = 9.5
