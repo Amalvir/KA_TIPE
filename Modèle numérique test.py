@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-##Objectifs:
-#Obtenir la position, et le volume immergé en fonction de l'angle téta
+## Objectifs:
+# Obtenir la position, et le volume immergé en fonction de l'angle téta
 
-#Obtenir le MSIT en fonction des positions relatives des centres de carène et de gravité et du Volume:
+# Obtenir le MSIT en fonction des positions relatives des centres de carène et de gravité et du Volume:
 """ On modélise notre engin flottant par un pavé de profondeur b, de hauteur h, de largeur l """
 
 h = 9.5
@@ -33,19 +33,47 @@ i = robj/rofl*h
 
 
 #On reste dans le plan
-def affichage_la_situation_initiale2D(teta):
-    X = [0, l, l, 0, 0]  #ABCDA
-    Z = [0, 0, h, h, 0]
-    EAU = np.linspace(-l, 2*l, 100)
-    NIV_EAU = [i]*100
+def affichage_la_situation_initiale2D():
+    X = [-l/2, l/2, l/2, -l/2, -l/2]  #ABCDA
+    Z = [h - i, h - i, -i, -i, h - i]
+    EAU = [-2*l, 2*l]
+    NIV_EAU = [0, 0]
 
-    plt.plot([l/2], [h/2], 'o', label='G')
-    plt.plot([l/2], [i/2], 'o', label='C')
-    plt.plot([l/2], [i], 'o', label='O')
+    plt.plot([0], [(h - 2*i)/2], 'o', label='G')
+    plt.plot([0], [-i/2], 'o', label='C')
+    plt.plot([0], [0], 'o', label='O')
     plt.plot(X, Z)
     plt.plot(EAU, NIV_EAU, label='eau')
     plt.legend()
+
+
+def affichage(teta):
+    phi = np.arctan((h-i)/2)
+    d = ((l/2)**2 + (h-i)**2)**1/2
+    C = [d*np.cos(phi + teta), d*np.sin(phi + teta)]
+    D = [-C[0] + l*np.cos(teta), C[1] - l*np.sin(teta)]
+    A = [D[0] - h*np.cos(teta), h*np.sin(teta) - D[1]]
+    B = [np.cos(teta)*h + C[0], np.sin(teta)*h - C[1]]
+    X = [A[0], B[0], C[0], D[0], A[0]]
+    Y = [A[1], B[1], C[1], D[1], A[1]]
+    plt.plot(X,Y)
     plt.show()
+
+def rotation(teta):
+    rDC = ((l/2)**2 + (h-i)**2)**1/2
+    rAB = (i**2 + (l/2)**2)**1/2
+
+    phiDC = np.arctan((h - i) / 2)
+    phiAB = np.arctan((i/(l/2)))
+
+    Cj = rDC*np.exp(1j*(phiDC+teta))
+    Dj = rDC*np.exp(1j*(np.pi-phiDC + teta))
+    Bj = rAB * np.exp(1j * (teta-phiAB))
+    Aj = rAB * np.exp(1j * (np.pi + phiAB + teta))
+
+    plt.plot([Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag])
+
+
 
 
 # On décide de tourner autour du point O, projeté de G sur NIV_EAU
@@ -54,3 +82,7 @@ def affichage_la_situationB(teta):
     Bz = (l/2)*np.sin(teta)+(Bx-l)*np.tan(teta)  # ya une erreur recalculer abs et ordonnées de ABCDA
     plt.plot([Bx], [Bz], 'o', label='B')
     plt.show()
+
+rotation(0)
+affichage_la_situation_initiale2D()
+plt.show()
