@@ -8,6 +8,7 @@ import numpy as np
 # Obtenir le MSIT en fonction des positions relatives des centres de carène et de gravité et du Volume:
 """ On modélise notre engin flottant par un pavé de profondeur b, de hauteur h, de largeur l """
 
+# LOLILOL
 h = 9.5
 # b=
 l = 34
