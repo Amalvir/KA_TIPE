@@ -78,12 +78,17 @@ def rotation(teta):
 
     plt.plot([Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag])
     plt.plot([C0.real, D0.real, A0.real, B0.real, C0.real], [C0.imag, D0.imag, A0.imag, B0.imag, C0.imag])
+<<<<<<< HEAD
     
+=======
+    print (rDC)
+>>>>>>> parent of 8dd47de... Ca fait un carre
 
 
 
 
 # On décide de tourner autour du point O, projeté de G sur NIV_EAU
+<<<<<<< HEAD
 # def affichage_la_situationB(teta):
 #     Bx = np.cos(teta)*(l/2)+l/2+i*np.sin(teta)
 #     Bz = (l/2)*np.sin(teta)+(Bx-l)*np.tan(teta)  # ya une erreur recalculer abs et ordonnées de ABCDA
@@ -93,3 +98,14 @@ def rotation(teta):
 # rotation(0)
 # affichage_la_situation_initiale2D()
 # plt.show()
+=======
+def affichage_la_situationB(teta):
+    Bx = np.cos(teta)*(l/2)+l/2+i*np.sin(teta)
+    Bz = (l/2)*np.sin(teta)+(Bx-l)*np.tan(teta)  # ya une erreur recalculer abs et ordonnées de ABCDA
+    plt.plot([Bx], [Bz], 'o', label='B')
+    plt.show()
+
+rotation(0)
+affichage_la_situation_initiale2D()
+plt.show()
+>>>>>>> parent of 8dd47de... Ca fait un carre
