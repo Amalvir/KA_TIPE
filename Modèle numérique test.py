@@ -63,33 +63,38 @@ def rotation(teta):
     rDC = ((l/2)**2 + (h-i)**2)**(1/2) #on avait oublié les parenthèses dans l'exposant
     rAB = (i**2 + (l/2)**2)**(1/2)
 
-    phiDC = np.arctan((h - i) /(l/2)) #faute de frappe
+    phiDC = np.arctan((h - i) /(l/2))  #faute de frappe
+    print("phiDC", phiDC)
     phiAB = np.arctan((i/(l/2)))
+    print("phiAB", phiAB)
     # Pour vérif' on ajoute les positions intiales avec complexes
-    C0=rDC*np.exp(1j*phiDC)
-    D0=rDC*np.exp(1j*(-phiDC+np.pi))
-    B0=rAB * np.exp(1j * (-phiAB))
-    A0 = rAB * np.exp(1j * (np.pi + phiAB))
+    C0 = rDC*np.exp(1j*phiDC)
+    D0 = rDC*np.exp(1j*(-phiDC+np.pi))
+    B0 = rAB*np.exp(1j*(-phiAB))
+    A0 = rAB*np.exp(1j*(np.pi + phiAB))
 
-    Cj = rDC*np.exp(1j*(phiDC+teta))
-    Dj = rDC*np.exp(1j*(np.pi-phiDC + teta))
-    Bj = rAB * np.exp(1j * (teta-phiAB))
-    Aj = rAB * np.exp(1j * (np.pi + phiAB + teta))
+    Cj = rDC*np.exp(1j*(phiDC + teta))
+    Dj = rDC*np.exp(1j*(np.pi - phiDC + teta))
+    Bj = rAB*np.exp(1j*(teta - phiAB))
+    Aj = rAB*np.exp(1j*(np.pi + phiAB + teta))
 
     plt.plot([Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag])
     plt.plot([C0.real, D0.real, A0.real, B0.real, C0.real], [C0.imag, D0.imag, A0.imag, B0.imag, C0.imag])
-    print (rDC)
+    print(rDC)
 
 
 
 
-# On décide de tourner autour du point O, projeté de G sur NIV_EAU
 def affichage_la_situationB(teta):
     Bx = np.cos(teta)*(l/2)+l/2+i*np.sin(teta)
     Bz = (l/2)*np.sin(teta)+(Bx-l)*np.tan(teta)  # ya une erreur recalculer abs et ordonnées de ABCDA
     plt.plot([Bx], [Bz], 'o', label='B')
     plt.show()
 
-rotation(0)
+plt.figure(figsize=[10, 10])
+plt.axis([-20, 20, -20, 20])
+rotation(np.pi/6)
 affichage_la_situation_initiale2D()
-plt.show()
+
+# On décide de tourner autour du point O, projeté de G sur NIV_EAU
+plt.savefig("Magnifique.pdf")
