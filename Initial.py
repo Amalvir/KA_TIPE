@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+# import Volume as V
 
 ## Objectifs:
 # Obtenir la position, et le volume immergé en fonction de l'angle téta
@@ -34,8 +34,10 @@ i = robj/rofl*h
 
 #On reste dans le plan
 def affichage_la_situation_initiale2D():
-    X = [-l/2, l/2, l/2, -l/2, -l/2]  #ABCDA
-    Z = [h - i, h - i, -i, -i, h - i]
+    """Plot les conditions initiales"""
+    # X = [-l/2, l/2, l/2, -l/2, -l/2]  #ABCDA
+    # Z = [h - i, h - i, -i, -i, h - i]
+    X, Z = rotation(0)
     EAU = [-2*l, 2*l]
     NIV_EAU = [0, 0]
 
@@ -44,16 +46,18 @@ def affichage_la_situation_initiale2D():
     plt.plot([0], [0], 'o', label='O')
     plt.plot(X, Z)
     plt.plot(EAU, NIV_EAU, label='eau')
+    points(0)
     plt.legend()
 
 
 
 
 def rotation(teta):
+    """Renvoie la liste des X et Z pour plot la rotation"""
     rDC = ((l/2)**2 + (h-i)**2)**(1/2)
     rAB = (i**2 + (l/2)**2)**(1/2)
 
-    phiDC = np.arctan((h - i) /(l/2))
+    phiDC = np.arctan((h - i)/(l/2))
     # print("phiDC", phiDC)
     phiAB = np.arctan((i/(l/2)))
     # print("phiAB", phiAB)
@@ -71,11 +75,47 @@ def rotation(teta):
     return [Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag]
 
 
-plt.figure(figsize=[6, 6])
-plt.axis([-20, 20, -20, 20])
-X, Y = rotation(np.pi/18)
-plt.plot(X, Y)
-affichage_la_situation_initiale2D()
+def hauteur(teta):
+    """Renvoie la hauteur immergé en fonction du rho objet, fluide, hauteur et teta"""
+    i0 = robj/rofl*h
+    A0 = l*i0
 
-# On décide de tourner autour du point O, projeté de G sur NIV_EAU
-plt.savefig("Magnifique.pdf")
+    # On récupère les coords des points
+    X, Y = rotation(teta)
+    # # systeme d'équation
+    # 0 = np.tan(teta)*x + b
+    # Y[0] = tan(teta)*X[0] + b
+
+    # Matrices :
+    A = np.array([[np.tan(teta), 1], [0, 1]])
+    B = np.array([0, Y[0] - np.tan(teta)*X[0]])
+    S = np.linalg.solve(A, B)
+    # S = [x, b] coordonné du point ou ca touche l'eau : [x, 0]
+    print(S)
+    return S[0]
+
+
+def points(teta):
+    """Plot les points ABCD en fonction de teta"""
+    X, Z = rotation(teta)
+    P = ['C', 'D', 'A', 'B']
+    for i in range(len(P)):
+        plt.plot(X[i], Z[i], 'ob')
+        plt.annotate(P[i], xy=(X[i], Z[i]))
+
+
+def affichage(teta):
+    plt.figure(figsize=[7, 7])
+    plt.axis([-20, 20, -20, 20])
+    X, Z = rotation(teta)
+    plt.plot(X, Z)
+    points(teta)
+    a = hauteur(np.pi/18)
+    plt.plot([a], [0], 'o')
+    affichage_la_situation_initiale2D()
+
+    # On décide de tourner autour du point O, projeté de G sur NIV_EAU
+    plt.savefig("Magnifique.pdf")
+
+
+affichage(np.pi/18)
