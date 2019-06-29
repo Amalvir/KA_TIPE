@@ -50,31 +50,31 @@ def affichage_la_situation_initiale2D():
 
 
 def rotation(teta):
-    rDC = ((l/2)**2 + (h-i)**2)**(1/2) #on avait oublié les parenthèses dans l'exposant
+    rDC = ((l/2)**2 + (h-i)**2)**(1/2)
     rAB = (i**2 + (l/2)**2)**(1/2)
 
-    phiDC = np.arctan((h - i) /(l/2))  #faute de frappe
-    print("phiDC", phiDC)
+    phiDC = np.arctan((h - i) /(l/2))
+    # print("phiDC", phiDC)
     phiAB = np.arctan((i/(l/2)))
-    print("phiAB", phiAB)
-    # Pour vérif' on ajoute les positions intiales avec complexes
-    C0 = rDC*np.exp(1j*phiDC)
-    D0 = rDC*np.exp(1j*(-phiDC+np.pi))
-    B0 = rAB*np.exp(1j*(-phiAB))
-    A0 = rAB*np.exp(1j*(np.pi + phiAB))
+    # print("phiAB", phiAB)
+
+    # C0 = rDC*np.exp(1j*phiDC)
+    # D0 = rDC*np.exp(1j*(-phiDC+np.pi))
+    # B0 = rAB*np.exp(1j*(-phiAB))
+    # A0 = rAB*np.exp(1j*(np.pi + phiAB))
 
     Cj = rDC*np.exp(1j*(phiDC + teta))
     Dj = rDC*np.exp(1j*(np.pi - phiDC + teta))
     Bj = rAB*np.exp(1j*(teta - phiAB))
     Aj = rAB*np.exp(1j*(np.pi + phiAB + teta))
 
-    plt.plot([Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag])
-    plt.plot([C0.real, D0.real, A0.real, B0.real, C0.real], [C0.imag, D0.imag, A0.imag, B0.imag, C0.imag])
-    print(rDC)
+    return [Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag]
+
 
 plt.figure(figsize=[6, 6])
 plt.axis([-20, 20, -20, 20])
-rotation(np.pi/18)
+X, Y = rotation(np.pi/18)
+plt.plot(X, Y)
 affichage_la_situation_initiale2D()
 
 # On décide de tourner autour du point O, projeté de G sur NIV_EAU
