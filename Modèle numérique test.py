@@ -72,9 +72,9 @@ def rotation(teta):
     plt.plot([C0.real, D0.real, A0.real, B0.real, C0.real], [C0.imag, D0.imag, A0.imag, B0.imag, C0.imag])
     print(rDC)
 
-plt.figure(figsize=[10, 10])
+plt.figure(figsize=[6, 6])
 plt.axis([-20, 20, -20, 20])
-rotation(np.pi/6)
+rotation(np.pi/18)
 affichage_la_situation_initiale2D()
 
 # On décide de tourner autour du point O, projeté de G sur NIV_EAU
