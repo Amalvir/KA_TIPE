@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from celluloid import Camera
 # import Volume as V
 
 ## Objectifs:
@@ -75,28 +76,35 @@ def rotation(teta):
     return [Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag]
 
 
-def hauteur(teta):
-    """Renvoie la hauteur immergé en fonction du rho objet, fluide, hauteur et teta"""
-    i0 = robj/rofl*h
-    A0 = l*i0
+def racines(teta):
+    """Renvoie les points de constacts avec l'eau en fonction de teta"""
 
+    sol = []
     # On récupère les coords des points
     X, Y = rotation(teta)
+    for i in range(len(Y) - 1):
+        if Y[i]*Y[i+1] < 0:
+            coeff = (Y[i+1] - Y[i])/(X[i+1] - X[i])
+            A = np.array([[coeff, 1], [0, 1]])
+            B = np.array([0, Y[i] - coeff*X[i]])
+            S = np.linalg.solve(A, B)
+            sol.append(S[0])
+
     # # systeme d'équation
     # 0 = np.tan(teta)*x + b
-    # Y[0] = tan(teta)*X[0] + b
+    # Y[0] - tan(teta)*X[0] = b
 
     # Matrices :
-    A = np.array([[np.tan(teta), 1], [0, 1]])
-    B = np.array([0, Y[0] - np.tan(teta)*X[0]])
-    S = np.linalg.solve(A, B)
+    # A = np.array([[np.tan(teta), 1], [0, 1]])
+    # B = np.array([0, Y[0] - np.tan(teta)*X[0]])
+    # S = np.linalg.solve(A, B)
     # S = [x, b] coordonné du point ou ca touche l'eau : [x, 0]
-    print(S)
-    return S[0]
+    # print(sol)
+    return sol
 
 
 def points(teta):
-    """Plot les points ABCD en fonction de teta"""
+    """Affiche les points ABCD en fonction de teta"""
     X, Z = rotation(teta)
     P = ['C', 'D', 'A', 'B']
     for i in range(len(P)):
@@ -105,17 +113,43 @@ def points(teta):
 
 
 def affichage(teta):
-    plt.figure(figsize=[7, 7])
+    fig = plt.figure(figsize=[7, 7])
+    camera = Camera(fig)
     plt.axis([-20, 20, -20, 20])
-    X, Z = rotation(teta)
-    plt.plot(X, Z)
-    points(teta)
-    a = hauteur(np.pi/18)
-    plt.plot([a], [0], 'o')
     affichage_la_situation_initiale2D()
 
+    camera.snap()
+    if isinstance(teta, list) or isinstance(teta, np.ndarray):
+        affichage_la_situation_initiale2D()
+        for agl in teta:
+            X, Z = rotation(agl)
+            plt.plot(X, Z)
+            points(agl)
+            root = racines(agl)
+            for j in root:
+                plt.plot(j, [0], 'o', color="orange")
+            camera.snap()
+
+        anim = camera.animate()
+        plt.show()
+    # else:
+    #     affichage([teta])
+
+
+
+    # X, Z = rotation(teta)
+    # plt.plot(X, Z)
+    # points(teta)
+    # root = racines(teta)
+    # for i in root:
+    #     plt.plot(i, [0], 'o', color="orange")
+
+    # affichage_la_situation_initiale2D()
     # On décide de tourner autour du point O, projeté de G sur NIV_EAU
-    plt.savefig("Magnifique.pdf")
+    # plt.savefig("Magnifique.pdf")
 
 
-affichage(np.pi/18)
+L = np.linspace(0, np.pi/6, 50)
+
+
+affichage(L)
