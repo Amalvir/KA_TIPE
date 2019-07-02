@@ -1,32 +1,13 @@
-import matplotlib.pyplot as plt
-import matplotlib.patches as patch
 import numpy as np
 
+
+# Constante
 
 h = 9.5
 l = 34
 robj = 0.8*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
-
-
-#On reste dans le plan
-def init():
-    """Plot les conditions initiales"""
-
-    X, Z = rotation(0)
-    EAU = [-2*l, 2*l]
-    NIV_EAU = [0, 0]
-
-    plt.plot([0], [(h - 2*i)/2], 'o', label='G')
-    plt.plot([0], [-i/2], 'o', label='C')
-    plt.plot([0], [0], 'o', label='O')
-    plt.plot(X, Z)
-    plt.plot(EAU, NIV_EAU, label='eau')
-    points(0)
-    plt.legend()
-
-
 
 
 def rotation(teta):
@@ -66,29 +47,3 @@ def racines(teta):
             S = np.linalg.solve(A, B)   # Pivot de Gauss
             sol.append(S[0])    # On a besoin que de x donc on append que S[0]
     return sol
-
-
-def points(teta):
-    """Affiche les points ABCD ainsi que leurs noms en fonction de teta"""
-    X, Z = rotation(teta)
-    P = ['C', 'D', 'A', 'B']
-    for j in range(len(P)):
-        plt.plot(X[j], Z[j], 'ob')
-        plt.annotate(P[j], xy=(X[j], Z[j]))
-
-
-def affichage(teta):
-    plt.figure(figsize=[7, 7])
-    plt.axis([-20, 20, -20, 20])
-    init()
-    X, Z = rotation(teta)
-    plt.plot(X, Z)
-    points(teta)
-    root = racines(teta)
-    for i in root:
-        plt.plot(i, [0], 'o', color="orange")
-
-    plt.show()
-
-
-affichage(np.pi/6)
