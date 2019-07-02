@@ -1,3 +1,5 @@
+# La où ca affiche des trucs
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from Calcul import *
@@ -48,14 +50,16 @@ def anim(teta, fig, ax):
     plot2 = ax.plot([], [], 'o', color="orange")[0]
     init()
 
-    def animate(teta):
-        X, Z = rotation(teta)
+    def animate(agl):
+        X, Z = rotation(agl)
         rect.set_data(X, Z)
-        root = racines(teta)
+        root = racines(agl)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
 
         return rect, plot1, plot2
+
+    print(1)
     ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=15)
     plt.show()
 
@@ -71,3 +75,4 @@ def non_anim(teta):
     root = racines(teta)
     for j in root:
         plt.plot(j, [0], 'o', color="orange")
+    print(2)

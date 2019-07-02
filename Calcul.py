@@ -1,3 +1,5 @@
+# La où y'a les calculs
+
 import numpy as np
 
 
