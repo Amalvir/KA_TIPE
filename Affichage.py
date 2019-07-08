@@ -45,19 +45,23 @@ def affichage(teta):
 def anim(teta, fig, ax):
     """Fonction qui génère l'animation"""
     X, Z = rotation(0)
+    Xg, Zg = emerge(X, Z)
     rect = ax.plot(X, Z)[0]
     plot1 = ax.plot([], [], 'o', color="orange")[0]
     plot2 = ax.plot([], [], 'o', color="orange")[0]
+    grav = ax.plot([], [], 'o', color="green")[0]
     init()
 
     def animate(agl):
         X, Z = rotation(agl)
+        Xg, Zg = emerge(X, Z)
         rect.set_data(X, Z)
         root = racines(agl)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
+        grav.set_data(Xg[0], Zg[0])
 
-        return rect, plot1, plot2
+        return rect, plot1, plot2, grav
 
     print(1)
     ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=15)
@@ -66,13 +70,12 @@ def anim(teta, fig, ax):
 
 def non_anim(teta):
     """Fonction qui génère la rotation"""
-    plt.figure(figsize=[7, 7])
-    plt.axis([-20, 20, -20, 20])
     init()
     X, Z = rotation(teta)
+    Xg, Zg = emerge(X, Z)
     plt.plot(X, Z)
+    plt.plot(Xg, Zg, 'o', color='green')
     points(teta)
     root = racines(teta)
     for j in root:
         plt.plot(j, [0], 'o', color="orange")
-    print(2)

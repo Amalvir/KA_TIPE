@@ -49,3 +49,23 @@ def racines(teta):
             S = np.linalg.solve(A, B)   # Pivot de Gauss
             sol.append(S[0])    # On a besoin que de x donc on append que S[0]
     return sol
+
+
+def emerge(X, Z):
+    """D'une liste de points, renvoie ceux qui sont émergés avec le centre de gravité en premier"""
+    Z1 = []
+    X1 = []
+    for a in range(len(Z)):
+        if Z[a] >= 1e-2:    # On est en python alors on prend une petite valeur plutôt que 0
+            Z1.append(Z[a])
+            X1.append(X[a])
+    x1, z1 = center_of_mass(X1, Z1)
+    X1.insert(0, x1)
+    Z1.insert(0, z1)
+    print(X1, Z1, '\n')
+    return X1, Z1
+
+
+def center_of_mass(X, Z):
+    """Renvoie les coord du centre de gravité"""
+    return sum(X)/len(X), sum(Z)/len(Z)

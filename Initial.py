@@ -3,3 +3,4 @@
 from Affichage import *
 
 affichage(np.linspace(0, 2*np.pi, 150))
+# affichage(np.pi/60)
