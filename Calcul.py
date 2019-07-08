@@ -2,7 +2,6 @@
 
 import numpy as np
 
-
 # Constante
 
 h = 9.5
@@ -56,16 +55,16 @@ def emerge(X, Z):
     Z1 = []
     X1 = []
     for a in range(len(Z)):
-        if Z[a] >= 1e-2:    # On est en python alors on prend une petite valeur plutôt que 0
+        if Z[a] <= 1e-2:    # On est en python alors on prend une petite valeur plutôt que 0
             Z1.append(Z[a])
             X1.append(X[a])
     x1, z1 = center_of_mass(X1, Z1)
     X1.insert(0, x1)
     Z1.insert(0, z1)
-    print(X1, Z1, '\n')
+    # print('X1', X1, 'Z1', Z1, '\n')
     return X1, Z1
 
 
 def center_of_mass(X, Z):
     """Renvoie les coord du centre de gravité"""
-    return sum(X)/len(X), sum(Z)/len(Z)
+    return sum(X[:-1])/len(X[:-1]), sum(Z[:-1])/len(Z[:-1])
