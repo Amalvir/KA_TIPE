@@ -50,7 +50,7 @@ def racines(teta):
     return sol
 
 
-def emerge(X, Z):
+def immerg(X, Z):
     """D'une liste de points, renvoie ceux qui sont émergés avec le centre de gravité en premier"""
     Z1 = []
     X1 = []
@@ -58,7 +58,7 @@ def emerge(X, Z):
         if Z[a] <= 1e-2:    # On est en python alors on prend une petite valeur plutôt que 0
             Z1.append(Z[a])
             X1.append(X[a])
-    x1, z1 = center_of_mass(X1, Z1)
+    x1, z1 = center_of_buoyancy(X1, Z1)
     X1.insert(0, x1)
     Z1.insert(0, z1)
     # print('X1', X1, 'Z1', Z1, '\n')
@@ -66,5 +66,10 @@ def emerge(X, Z):
 
 
 def center_of_mass(X, Z):
-    """Renvoie les coord du centre de gravité"""
+    """Renvoie les coords du centre de gravité"""
     return sum(X[:-1])/len(X[:-1]), sum(Z[:-1])/len(Z[:-1])
+
+
+def center_of_buoyancy(X, Z):
+    """Renvoie les coords du centre de buoyency"""
+    return sum(X)/len(X), sum(Z)/len(Z)

@@ -57,7 +57,7 @@ def anim(teta, fig, ax):
         root = racines(agl)
         X.extend(root)
         Z.extend([0]*len(root))
-        Xb, Zb = emerge(X, Z)
+        Xb, Zb = immerg(X, Z)
         X, Z = rotation(agl)
 
         rect.set_data(X, Z)
@@ -83,8 +83,9 @@ def non_anim(teta):
     root = racines(teta)
     X.extend(root)
     Z.extend([0]*len(root))
-    Xg, Zg = emerge(X, Z)
-    plt.plot(Xg, Zg, 'o', color='green')
+    Xg, Zg = immerg(X, Z)
+    print(Zg)
+    plt.plot(Xg[0], Zg[0], 'o', color='green')   # Le centre de gravité des points immergé
     points(teta)
     for j in root:
         plt.plot(j, [0], 'o', color="orange")

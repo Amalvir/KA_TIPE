@@ -2,5 +2,5 @@
 
 from Affichage import *
 
-affichage(np.linspace(0, 2*np.pi, 500))
-# affichage(np.pi/60)
+# affichage(np.linspace(0, 2*np.pi, 500))
+affichage(np.pi/20)
