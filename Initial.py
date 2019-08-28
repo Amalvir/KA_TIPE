@@ -2,5 +2,7 @@
 
 from Affichage import *
 
-# affichage(np.linspace(0, 2*np.pi, 500))
-affichage(np.pi/20)
+affichage(np.linspace(0, 2*np.pi, 500))
+#affichage(np.pi/20)
+
+#Caluculer le MSIT en fonction des autres trucs 
