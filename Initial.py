@@ -3,4 +3,6 @@
 from Affichage import *
 
 # affichage(np.linspace(0, 2*np.pi, 500))
-affichage(np.pi/20)
+
+print(aire_immerg(np.pi/120))
+affichage(np.pi/120)

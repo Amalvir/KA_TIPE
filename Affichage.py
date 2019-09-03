@@ -84,7 +84,7 @@ def non_anim(teta):
     X.extend(root)
     Z.extend([0]*len(root))
     Xg, Zg = immerg(X, Z)
-    print(Zg)
+    # print(Zg)
     plt.plot(Xg[0], Zg[0], 'o', color='green')   # Le centre de gravité des points immergé
     points(teta)
     for j in root:
