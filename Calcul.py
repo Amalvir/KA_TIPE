@@ -3,12 +3,14 @@
 import numpy as np
 
 # Constante
-b=34  #profondeur sert pas dans l'animation mais pour le MSIT
+b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
 l = 34
-robj = 0.8*10**3   # Masse volumique de l'objet en kg/m^3
+robj = 0.5*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
+I = b*h**3/12   # I est le moment quadratique
+
 
 
 def rotation(teta):
@@ -88,14 +90,13 @@ def center_of_buoyancy(X, Z):
 def distance_entreGC(teta):
     X,Z=rotation(teta)
     x,z=immerg(X,Z)
-    return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2+(center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
+    return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2 + (center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
     
-    
-I=b*h**3/12   # I est le moment quadratique
 
 # MSIT=rofl*(I-Vc*a) 
-#def fMSIT(teta):
- # return rofl*(I-aire_immerg(teta)*distance_entreGC(teta)
+def fMSIT(teta):
+    return rofl*(I-(aire_immerg(teta)*b*distance_entreGC(teta)))
+
 
 def aire_immerg(teta):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
