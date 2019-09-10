@@ -2,17 +2,12 @@
 
 from Affichage import *
 
-#affichage(np.linspace(0, 2*np.pi, 500))
-affichage(np.pi/20)
-
-#Calculer le MSIT en fonction des dimensions de la platforme, grâce à ça on peut justifier la forme de la plateforme;
-
-#angle=[np.linspace(0,np.pi/4,100)]
-#MSIT=[]
-
-
-
 # affichage(np.linspace(0, 2*np.pi, 500))
-affichage(np.pi/20)
+# affichage(np.pi/120)
 
-#Caluculer le MSIT en fonction des autres trucs
+
+# print(aire_immerg(np.pi/120))
+X = np.linspace(0, 4*np.pi, 400)
+Y = [aire_immerg(teta) for teta in X]
+plt.plot(X, Y)
+plt.show()

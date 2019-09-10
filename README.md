@@ -25,7 +25,7 @@ I=b*h**3/12
 ### H rayon du cercle que forme les centres de carène en fonction de téta
  
 ### i hauteur immergée de l'objet d'après archimède:
-= robj/rofl*h
+i = robj/rofl*h = 
  
 ### V volume de la partie imergée
 V=i*l*b  V volume de la partie imergée
