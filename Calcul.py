@@ -28,7 +28,7 @@ def rotation(teta):
 
 
 def racines(teta):
-    """Renvoie les points de contacts avec l'eau en fonction de teta"""
+    """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
 
     sol = []
     # On récupère les coordonnés des points
@@ -51,7 +51,7 @@ def racines(teta):
 
 
 def immerg(X, Z):
-    """D'une liste de points, renvoie ceux qui sont émergés avec le centre de gravité en premier"""
+    """D'une liste de points, renvoie ceux qui sont immergés avec le centre de gravité en premier"""
     Z1 = []
     X1 = []
     for a in range(len(Z)):
@@ -65,6 +65,17 @@ def immerg(X, Z):
     return X1, Z1
 
 
+def emerg(X, Z):
+    """D'une liste de points, renvoie ceux qui sont émergés."""
+    Z1 = []
+    X1 = []
+    for a in range(len(Z)):
+        if Z[a] >= -1e-2:  # On est en python alors on prend une petite valeur plutôt que 0
+            Z1.append(Z[a])
+            X1.append(X[a])
+    return X1, Z1
+
+
 def center_of_mass(X, Z):
     """Renvoie les coords du centre de gravité"""
     return sum(X[:-1])/len(X[:-1]), sum(Z[:-1])/len(Z[:-1])
@@ -73,7 +84,6 @@ def center_of_mass(X, Z):
 def center_of_buoyancy(X, Z):
     """Renvoie les coords du centre de buoyency"""
     return sum(X)/len(X), sum(Z)/len(Z)
-
 
 def distance_entreGC(teta):
     X,Z=rotation(teta)
@@ -86,3 +96,20 @@ I=b*h**3/12   # I est le moment quadratique
 # MSIT=rofl*(I-Vc*a) 
 #def fMSIT(teta):
  # return rofl*(I-aire_immerg(teta)*distance_entreGC(teta)
+
+def aire_immerg(teta):
+    """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
+    A, B = rotation(teta)
+    print(A[1:], B[1:])
+    C = A[1:] + [0]*len(racines(teta))
+    D = B[1:] + racines(teta)
+    X, Y = immerg(C, D)
+    print(X,Y)
+    s = 0
+    for i in range(len(X)-2):
+        s = s + X[i]*Y[i+1] - X[i+1]*Y[i]
+        # print(s)
+    return 1/2*s
+
+
+
