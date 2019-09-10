@@ -3,7 +3,7 @@
 import numpy as np
 
 # Constante
-
+b=34  #profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
 l = 34
 robj = 0.8*10**3   # Masse volumique de l'objet en kg/m^3
@@ -73,3 +73,16 @@ def center_of_mass(X, Z):
 def center_of_buoyancy(X, Z):
     """Renvoie les coords du centre de buoyency"""
     return sum(X)/len(X), sum(Z)/len(Z)
+
+
+def distance_entreGC(teta):
+    X,Z=rotation(teta)
+    x,z=immerg(X,Z)
+    return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2+(center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
+    
+    
+I=b*h**3/12   # I est le moment quadratique
+
+# MSIT=rofl*(I-Vc*a) 
+#def fMSIT(teta):
+ # return rofl*(I-aire_immerg(teta)*distance_entreGC(teta)
