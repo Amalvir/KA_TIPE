@@ -112,7 +112,6 @@ def aire_immerg(teta):
     Y.insert(0, 0)
     X.append(R[1])
     Y.append(0)
-    print(X, Y)
 
     s = 0
     for i in range(len(X)-1):
