@@ -89,15 +89,24 @@ def center_of_buoyancy(X, Z):
 def aire_immerg(teta):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
     A, B = rotation(teta)
-    print(A[1:], B[1:])
-    C = A[1:] + [0]*len(racines(teta))
-    D = B[1:] + racines(teta)
-    X, Y = immerg(C, D)
-    print(X,Y)
+    R = racines(teta)
+
+    C = A[1:]
+    D = B[1:]
+    E, F = immerg(C, D)
+    X = E[1:]
+    Y = F[1:]
+
+    X.insert(0, R[0])
+    Y.insert(0, 0)
+    X.append(R[1])
+    Y.append(0)
+    print(X, Y)
+
     s = 0
-    for i in range(len(X)-2):
+    for i in range(len(X)-1):
         s = s + X[i]*Y[i+1] - X[i+1]*Y[i]
-        # print(s)
+        # On doit trouver 323
     return 1/2*s
 
 
