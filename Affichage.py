@@ -47,23 +47,24 @@ def anim(teta, fig, ax):
     rect = ax.plot(X, Z)[0]
     plot1 = ax.plot([], [], 'o', color="orange")[0]
     plot2 = ax.plot([], [], 'o', color="orange")[0]
-    buoyency = ax.plot([], [], 'o', color="green")[0]
+    buoyency = ax.plot([], [], 'o-', color="green")[0]
     grav = ax.plot([], [], 'o', color="red")[0]
     init()
 
     def animate(agl):
         X, Z = rotation(agl)
-        xg, zg = center_of_mass(X, Z)
+        xg, zg = center_of_mass(X, Z)   # Point G
         root = racines(agl)
         X.extend(root)
         Z.extend([0]*len(root))
-        Xb, Zb = immerg(X, Z)
+        Xb, Zb = immerg(X[1:-1], Z[1:-1])   # Centre buyocency
+        # print("X", Xb, "Z", Zb)
         X, Z = rotation(agl)
 
         rect.set_data(X, Z)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
-        buoyency.set_data(Xb[0], Zb[0])
+        buoyency.set_data(Xb, Zb)
         grav.set_data(xg, zg)
 
         return rect, plot1, plot2, buoyency, grav
@@ -78,15 +79,12 @@ def non_anim(teta):
     init()
     X, Z = rotation(teta)
     plt.plot(X, Z)
-    xg, zg = center_of_mass(X, Z)
+    xg, zg = center_of_mass(X, Z)   # Point G
     plt.plot(xg, zg, 'o', color='red')
     root = racines(teta)
     X.extend(root)
     Z.extend([0]*len(root))
     Xg, Zg = immerg(X, Z)
-    print(Zg)
-    plt.plot(Xg[0], Zg[0], 'o', color='green')   # Le centre de gravité des points immergés
-    # print(Zg)
     plt.plot(Xg[0], Zg[0], 'o', color='green')   # Le centre de gravité des points immergé
     points(teta)
     for j in root:

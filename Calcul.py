@@ -26,6 +26,8 @@ def rotation(teta):
     Bj = rAB*np.exp(1j*(teta - phiAB))
     Aj = rAB*np.exp(1j*(np.pi + phiAB + teta))
 
+    # print(teta, [Dj.real, Aj.real, Bj.real, Cj.real], [Dj.imag, Aj.imag, Bj.imag, Cj.imag])    print(teta, [Dj.real, Aj.real, Bj.real, Cj.real], [Dj.imag, Aj.imag, Bj.imag, Cj.imag])
+
     return [Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag]
 
 
@@ -57,9 +59,9 @@ def immerg(X, Z):
     Z1 = []
     X1 = []
     for a in range(len(Z)):
-        if Z[a] <= 1e-2:    # On est en python alors on prend une petite valeur plutôt que 0
-            Z1.append(Z[a])
+        if Z[a] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
             X1.append(X[a])
+            Z1.append(Z[a])
     x1, z1 = center_of_buoyancy(X1, Z1)
     X1.insert(0, x1)
     Z1.insert(0, z1)
