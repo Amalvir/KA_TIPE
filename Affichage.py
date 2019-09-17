@@ -97,6 +97,7 @@ def courbe_de_stabilite_statique():
     X=np.linspace(0,np.pi/2) #abscisses de la courbe
     Y=[GZ(x) for x in X ]
     plt.plot(X,Y,label='courbe de stabilitée satique')
+    plt.plot([1,1],[5,8],"--") # verticale pou tangeante à l'origine
     plt.xlabel('teta')
     plt.ylabel('GZ')
     plt.legend()

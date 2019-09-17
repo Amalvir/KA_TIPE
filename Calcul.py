@@ -128,4 +128,16 @@ def GZ(teta):
     G=center_of_mass(C,D)
     return np.sqrt((Z[0]-Z[1])**2+(G[0]-G[1])**2)
     
+    
+def metacentre():
+    teta=np.pi/65
+    A,B=rotation(0)
+    C,D=rotation(teta)
+    G=center_of_mass(A,B)
+    Gp=center_of_mass(C,D)
+    c1,c2=imerg(A,B)
+    c3,c4=imerg(C,D)
+    C=[c1[0],c2[0]]
+    Cp=[c3[0],c4[0]]
+    
 

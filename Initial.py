@@ -3,7 +3,7 @@
 from Affichage import *
 
 #affichage(np.linspace(0, np.pi/3, 200))
-#affichage(np.pi/40)
+affichage(np.pi/5)
 
 
 # print(aire_immerg(np.pi/120))
@@ -12,4 +12,4 @@ from Affichage import *
 #plt.plot(X, Y)
 #plt.show()
 
-courbe_de_stabilite_statique()
+#courbe_de_stabilite_statique()
