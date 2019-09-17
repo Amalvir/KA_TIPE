@@ -91,3 +91,16 @@ def non_anim(teta):
     points(teta)
     for j in root:
         plt.plot(j, [0], 'o', color="orange")
+
+
+def courbe_de_stabilite_statique():
+    X=np.linspace(0,np.pi/2) #abscisses de la courbe
+    Y=[GZ(x) for x in X ]
+    plt.plot(X,Y,label='courbe de stabilitée satique')
+    plt.xlabel('teta')
+    plt.ylabel('GZ')
+    plt.legend()
+    plt.show()
+
+
+    

@@ -6,7 +6,7 @@ import numpy as np
 b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
 l = 34
-robj = 0.5*10**3   # Masse volumique de l'objet en kg/m^3
+robj = 0.9*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique
@@ -120,5 +120,12 @@ def aire_immerg(teta):
         # On doit trouver 323
     return 1/2*s
 
-
+def GZ(teta): 
+    """Revoit le bras de levier entre le centre de masse en position initiale et le centre de masse en fonction de teta"""
+    A,B=rotation(0)
+    C,D=rotation(teta)
+    Z=center_of_mass(A,B)
+    G=center_of_mass(C,D)
+    return np.sqrt((Z[0]-Z[1])**2+(G[0]-G[1])**2)
+    
 
