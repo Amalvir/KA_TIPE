@@ -6,7 +6,7 @@ import numpy as np
 b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
 l = 34
-robj = 0.5*10**3   # Masse volumique de l'objet en kg/m^3
+robj = 0.7*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique
@@ -54,7 +54,7 @@ def racines(teta):
     return sol
 
 
-def immerg(X, Z):
+def immerg(X, Z, teta):
     """D'une liste de points, renvoie ceux qui sont immergés avec le centre de gravité en premier"""
     Z1 = []
     X1 = []
@@ -62,9 +62,9 @@ def immerg(X, Z):
         if Z[a] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
             X1.append(X[a])
             Z1.append(Z[a])
-    x1, z1 = center_of_buoyancy(X1, Z1)
-    X1.insert(0, x1)
-    Z1.insert(0, z1)
+    # x1, z1 = center_of_buoyancy(X1, Z1, teta)
+    # X1.insert(0, x1)
+    # Z1.insert(0, z1)
     # print('X1', X1, 'Z1', Z1, '\n')
     return X1, Z1
 
@@ -85,13 +85,19 @@ def center_of_mass(X, Z):
     return sum(X[:-1])/len(X[:-1]), sum(Z[:-1])/len(Z[:-1])
 
 
-def center_of_buoyancy(X, Z):
+def center_of_buoyancy(X, Z, teta):
     """Renvoie les coords du centre de buoyency"""
-    return sum(X)/len(X), sum(Z)/len(Z)
+    print(X)
+    s = 0
+    t = 0
+    for i in range(len(X)-2):
+        s += (X[i] + X[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
+        t += (Z[i] + Z[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
+    return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
 
 def distance_entreGC(teta):
     X,Z=rotation(teta)
-    x,z=immerg(X,Z)
+    x,z=immerg(X,Z, teta)
     return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2 + (center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
     
 
@@ -107,7 +113,7 @@ def aire_immerg(teta):
 
     C = A[1:]
     D = B[1:]
-    E, F = immerg(C, D)
+    E, F = immerg(C, D, teta)
     X = E[1:]
     Y = F[1:]
 

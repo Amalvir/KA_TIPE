@@ -57,8 +57,8 @@ def anim(teta, fig, ax):
         root = racines(agl)
         X.extend(root)
         Z.extend([0]*len(root))
-        Xb, Zb = immerg(X[1:-1], Z[1:-1])   # Centre buyocency
-        # print("X", Xb, "Z", Zb)
+        Xb, Zb = immerg(X, Z, agl)   # Point immergé
+        Xbb, Zbb = center_of_buoyancy(Xb, Zb, agl)  # Centre de buyocency
         X, Z = rotation(agl)
 
         rect.set_data(X, Z)
@@ -84,7 +84,7 @@ def non_anim(teta):
     root = racines(teta)
     X.extend(root)
     Z.extend([0]*len(root))
-    Xg, Zg = immerg(X, Z)
+    Xg, Zg = immerg(X, Z, teta)
     plt.plot(Xg[0], Zg[0], 'o', color='green')   # Le centre de gravité des points immergé
     points(teta)
     for j in root:
