@@ -13,7 +13,7 @@ I = b*h**3/12   # I est le moment quadratique
 
 
 
-def rotation(teta):
+def rotation(teta, affichage=False):
     """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
     rDC = ((l/2)**2 + (h-i)**2)**(1/2)
     rAB = (i**2 + (l/2)**2)**(1/2)
@@ -26,17 +26,39 @@ def rotation(teta):
     Bj = rAB*np.exp(1j*(teta - phiAB))
     Aj = rAB*np.exp(1j*(np.pi + phiAB + teta))
 
-    # print(teta, [Dj.real, Aj.real, Bj.real, Cj.real], [Dj.imag, Aj.imag, Bj.imag, Cj.imag])    print(teta, [Dj.real, Aj.real, Bj.real, Cj.real], [Dj.imag, Aj.imag, Bj.imag, Cj.imag])
+    if affichage:
+        return [Cj, Dj, Aj, Bj, Cj]
+    else:
+        return [Cj, Dj, Aj, Bj]
 
-    return [Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag]
+def tri(L):
+    """Trie la liste en fonction des arguments"""
+    for k in range(1,len(L)):
+        temp = L[k]
+        j = k
+    while j > 0 and np.angle(temp) < np.angle(L[j-1]):
+        L[j]=L[j-1]
+        L-=1
+        L[j]=temp
+    return L
+   
 
+
+def reel(L):
+    """D'une liste de complexe, renvoie les coords X et Y"""
+    X = []
+    Y = []
+    for i in L:
+        X.append(i.real)
+        Y.append(i.imag)
+    return (X, Y)
 
 def racines(teta):
     """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
 
     sol = []
     # On récupère les coordonnés des points
-    X, Y = rotation(teta)
+    (X, Y) = reel(rotation(teta))
 
     for j in range(len(Y) - 1):
         if Y[j]*Y[j+1] < 0:
@@ -96,8 +118,8 @@ def center_of_buoyancy(X, Z, teta):
     return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
 
 def distance_entreGC(teta):
-    X,Z=rotation(teta)
-    x,z=immerg(X,Z, teta)
+    X ,Z = reel(rotation(teta))
+    x, z = immerg(X, Z, teta)
     return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2 + (center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
     
 
@@ -108,7 +130,7 @@ def fMSIT(teta):
 
 def aire_immerg(teta):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    A, B = rotation(teta)
+    A, B = reel(rotation(teta))
     R = racines(teta)
 
     C = A[1:]

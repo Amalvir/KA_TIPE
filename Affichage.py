@@ -8,7 +8,7 @@ from Calcul import *
 def init():
     """Plot les conditions initiales"""
 
-    X, Z = rotation(0)
+    X, Z = reel(rotation(0))
     EAU = [-2*l, 2*l]
     NIV_EAU = [0, 0]
 
@@ -22,7 +22,7 @@ def init():
 
 def points(teta):
     """Affiche les points ABCD ainsi que leurs noms en fonction de teta"""
-    X, Z = rotation(teta)
+    X, Z = reel(rotation(teta))
     P = ['C', 'D', 'A', 'B']
     for j in range(len(P)):
         plt.plot(X[j], Z[j], 'ob')
@@ -43,7 +43,7 @@ def affichage(teta):
 
 def anim(teta, fig, ax):
     """Fonction qui génère l'animation"""
-    X, Z = rotation(0)
+    X, Z = reel(rotation(0))
     rect = ax.plot(X, Z)[0]
     plot1 = ax.plot([], [], 'o', color="orange")[0]
     plot2 = ax.plot([], [], 'o', color="orange")[0]
@@ -77,7 +77,7 @@ def anim(teta, fig, ax):
 def non_anim(teta):
     """Fonction qui génère la rotation"""
     init()
-    X, Z = rotation(teta)
+    X, Z = reel(rotation(teta, True))
     plt.plot(X, Z)
     xg, zg = center_of_mass(X, Z)   # Point G
     plt.plot(xg, zg, 'o', color='red')
