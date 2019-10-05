@@ -2,11 +2,10 @@
 
 from Affichage import *
 
-# affichage(np.linspace(0, np.pi/3, 500))
-affichage(np.pi/40)
+affichage(np.linspace(0, np.pi/3, 500))
+# affichage(np.pi/40)
 
-L = tri(rotation(np.pi/2))
-print(L)
+L = tri(rotation(np.pi/40))
 
 
 # print(aire_immerg(np.pi/120))

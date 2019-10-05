@@ -8,7 +8,7 @@ from Calcul import *
 def init():
     """Plot les conditions initiales"""
 
-    X, Z = reel(rotation(0))
+    X, Z = reel(rotation(0, affichage=True))
     EAU = [-2*l, 2*l]
     NIV_EAU = [0, 0]
 
@@ -43,7 +43,7 @@ def affichage(teta):
 
 def anim(teta, fig, ax):
     """Fonction qui génère l'animation"""
-    X, Z = reel(rotation(0))
+    X, Z = reel(rotation(0, affichage=True))
     rect = ax.plot(X, Z)[0]
     plot1 = ax.plot([], [], 'o', color="orange")[0]
     plot2 = ax.plot([], [], 'o', color="orange")[0]
@@ -52,15 +52,12 @@ def anim(teta, fig, ax):
     init()
 
     def animate(agl):
-        X, Z = rotation(agl)
-        xg, zg = center_of_mass(X, Z)   # Point G
         root = racines(agl)
-        X.extend(root)
-        Z.extend([0]*len(root))
+        X, Z = reel(tri(rotation(0, affichage=False) + root)   # On convertie et on trie les points
+        xg, zg = center_of_mass(X, Z)   # Point G
         Xb, Zb = immerg(X, Z, agl)   # Point immergé
         Xbb, Zbb = center_of_buoyancy(Xb, Zb, agl)  # Centre de buyocency
-        X, Z = rotation(agl)
-
+        X, Z = reel(tri(rotation(agl, True)))
         rect.set_data(X, Z)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
@@ -69,7 +66,6 @@ def anim(teta, fig, ax):
 
         return rect, plot1, plot2, buoyency, grav
 
-    print(1)
     ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=15)
     plt.show()
 
@@ -77,7 +73,7 @@ def anim(teta, fig, ax):
 def non_anim(teta):
     """Fonction qui génère la rotation"""
     init()
-    X, Z = reel(rotation(teta, True))
+    X, Z = reel(rotation(teta, affichage=True))
     plt.plot(X, Z)
     xg, zg = center_of_mass(X, Z)   # Point G
     plt.plot(xg, zg, 'o', color='red')

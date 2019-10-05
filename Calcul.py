@@ -33,13 +33,13 @@ def rotation(teta, affichage=False):
 
 def tri(L):
     """Trie la liste en fonction des arguments"""
-    for k in range(1,len(L)):
+    for k in range(1, len(L)):
         temp = L[k]
         j = k
     while j > 0 and np.angle(temp) < np.angle(L[j-1]):
-        L[j]=L[j-1]
-        L-=1
-        L[j]=temp
+        L[j] = L[j-1]
+        j -= 1
+        L[j] = temp
     return L
    
 
@@ -58,7 +58,7 @@ def racines(teta):
 
     sol = []
     # On récupère les coordonnés des points
-    (X, Y) = reel(rotation(teta))
+    X, Y = reel(rotation(teta, affichage=True))
 
     for j in range(len(Y) - 1):
         if Y[j]*Y[j+1] < 0:
@@ -109,7 +109,6 @@ def center_of_mass(X, Z):
 
 def center_of_buoyancy(X, Z, teta):
     """Renvoie les coords du centre de buoyency"""
-    print(X)
     s = 0
     t = 0
     for i in range(len(X)-2):
