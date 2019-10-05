@@ -33,6 +33,7 @@ def rotation(teta, affichage=False):
 
 def tri(L):
     """Trie la liste en fonction des arguments"""
+    # L = np.angle(A)
     for k in range(1, len(L)):
         temp = L[k]
         j = k
@@ -76,8 +77,9 @@ def racines(teta):
     return sol
 
 
-def immerg(X, Z, teta):
+def immerg(coords, teta):
     """D'une liste de points, renvoie ceux qui sont immergés avec le centre de gravité en premier"""
+    X, Z = coords
     Z1 = []
     X1 = []
     for a in range(len(Z)):
@@ -104,21 +106,23 @@ def emerg(X, Z):
 
 def center_of_mass(X, Z):
     """Renvoie les coords du centre de gravité"""
-    return sum(X[:-1])/len(X[:-1]), sum(Z[:-1])/len(Z[:-1])
+    return sum(X)/len(X), sum(Z)/len(Z)
 
 
 def center_of_buoyancy(X, Z, teta):
     """Renvoie les coords du centre de buoyency"""
+    X += X[:1]
+    Z += Z[:1]
     s = 0
     t = 0
-    for i in range(len(X)-2):
+    for i in range(0, len(X)-2):
         s += (X[i] + X[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
         t += (Z[i] + Z[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
     return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
 
 def distance_entreGC(teta):
     X ,Z = reel(rotation(teta))
-    x, z = immerg(X, Z, teta)
+    x, z = immerg((X, Z), teta)
     return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2 + (center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
     
 
@@ -129,23 +133,13 @@ def fMSIT(teta):
 
 def aire_immerg(teta):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    A, B = reel(rotation(teta))
-    R = racines(teta)
-
-    C = A[1:]
-    D = B[1:]
-    E, F = immerg(C, D, teta)
-    X = E[1:]
-    Y = F[1:]
-
-    X.insert(0, R[0])
-    Y.insert(0, 0)
-    X.append(R[1])
-    Y.append(0)
+    Rot = tri(rotation(teta, affichage=False) + racines(teta))
+    X, Y = immerg(reel(Rot), teta)
 
     s = 0
     for i in range(len(X)-1):
         s = s + X[i]*Y[i+1] - X[i+1]*Y[i]
+        print(1/2*s)
         # On doit trouver 323
     return 1/2*s
 

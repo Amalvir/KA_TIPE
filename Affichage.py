@@ -53,15 +53,17 @@ def anim(teta, fig, ax):
 
     def animate(agl):
         root = racines(agl)
-        X, Z = reel(tri(rotation(0, affichage=False) + root)   # On convertie et on trie les points
+        Rot = rotation(agl, affichage=False)
+        X, Z = reel(tri(Rot))   # On convertie et on trie les points
         xg, zg = center_of_mass(X, Z)   # Point G
-        Xb, Zb = immerg(X, Z, agl)   # Point immergé
+        X, Z = reel(tri(Rot + root))
+        Xb, Zb = immerg((X, Z), agl)   # Point immergé
         Xbb, Zbb = center_of_buoyancy(Xb, Zb, agl)  # Centre de buyocency
         X, Z = reel(tri(rotation(agl, True)))
         rect.set_data(X, Z)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
-        buoyency.set_data(Xb, Zb)
+        buoyency.set_data(Xbb, Zbb)
         grav.set_data(xg, zg)
 
         return rect, plot1, plot2, buoyency, grav
@@ -80,7 +82,7 @@ def non_anim(teta):
     root = racines(teta)
     X.extend(root)
     Z.extend([0]*len(root))
-    Xg, Zg = immerg(X, Z, teta)
+    Xg, Zg = immerg((X, Z), teta)
     plt.plot(Xg[0], Zg[0], 'o', color='green')   # Le centre de gravité des points immergé
     points(teta)
     for j in root:
