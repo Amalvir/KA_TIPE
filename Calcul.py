@@ -13,7 +13,7 @@ I = b*h**3/12   # I est le moment quadratique
 
 
 
-def rotation(teta):
+def rotation(teta, affichage=False):
     """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
     rDC = ((l/2)**2 + (h-i)**2)**(1/2)
     rAB = (i**2 + (l/2)**2)**(1/2)
@@ -26,15 +26,40 @@ def rotation(teta):
     Bj = rAB*np.exp(1j*(teta - phiAB))
     Aj = rAB*np.exp(1j*(np.pi + phiAB + teta))
 
-    return [Cj.real, Dj.real, Aj.real, Bj.real, Cj.real], [Cj.imag, Dj.imag, Aj.imag, Bj.imag, Cj.imag]
+    if affichage:
+        return [Cj, Dj, Aj, Bj, Cj]
+    else:
+        return [Cj, Dj, Aj, Bj]
 
+def tri(L):
+    """Trie la liste en fonction des arguments"""
+    # L = np.angle(A)
+    for k in range(1, len(L)):
+        temp = L[k]
+        j = k
+    while j > 0 and np.angle(temp) < np.angle(L[j-1]):
+        L[j] = L[j-1]
+        j -= 1
+        L[j] = temp
+    return L
+
+
+
+def reel(L):
+    """D'une liste de complexe, renvoie les coords X et Y"""
+    X = []
+    Y = []
+    for i in L:
+        X.append(i.real)
+        Y.append(i.imag)
+    return (X, Y)
 
 def racines(teta):
     """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
 
     sol = []
     # On récupère les coordonnés des points
-    X, Y = rotation(teta)
+    X, Y = reel(rotation(teta, affichage=True))
 
     for j in range(len(Y) - 1):
         if Y[j]*Y[j+1] < 0:
@@ -52,17 +77,18 @@ def racines(teta):
     return sol
 
 
-def immerg(X, Z):
+def immerg(coords, teta):
     """D'une liste de points, renvoie ceux qui sont immergés avec le centre de gravité en premier"""
+    X, Z = coords
     Z1 = []
     X1 = []
     for a in range(len(Z)):
-        if Z[a] <= 1e-2:    # On est en python alors on prend une petite valeur plutôt que 0
-            Z1.append(Z[a])
+        if Z[a] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
             X1.append(X[a])
-    x1, z1 = center_of_buoyancy(X1, Z1)
-    X1.insert(0, x1)
-    Z1.insert(0, z1)
+            Z1.append(Z[a])
+    # x1, z1 = center_of_buoyancy(X1, Z1, teta)
+    # X1.insert(0, x1)
+    # Z1.insert(0, z1)
     # print('X1', X1, 'Z1', Z1, '\n')
     return X1, Z1
 
@@ -80,16 +106,23 @@ def emerg(X, Z):
 
 def center_of_mass(X, Z):
     """Renvoie les coords du centre de gravité"""
-    return sum(X[:-1])/len(X[:-1]), sum(Z[:-1])/len(Z[:-1])
-
-
-def center_of_buoyancy(X, Z):
-    """Renvoie les coords du centre de buoyency"""
     return sum(X)/len(X), sum(Z)/len(Z)
 
+
+def center_of_buoyancy(X, Z, teta):
+    """Renvoie les coords du centre de buoyency"""
+    X += X[:1]
+    Z += Z[:1]
+    s = 0
+    t = 0
+    for i in range(0, len(X)-1):
+        s += (X[i] + X[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
+        t += (Z[i] + Z[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
+    return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
+
 def distance_entreGC(teta):
-    X,Z=rotation(teta)
-    x,z=immerg(X,Z)
+    X ,Z = reel(rotation(teta))
+    x, z = immerg((X, Z), teta)
     return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2 + (center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
     
 
@@ -100,35 +133,28 @@ def fMSIT(teta):
 
 def aire_immerg(teta):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    A, B = rotation(teta)
-    R = racines(teta)
+    Rot = tri(rotation(teta, affichage=False) + racines(teta))
+    X, Y = immerg(reel(Rot), teta)
 
-    C = A[1:]
-    D = B[1:]
-    E, F = immerg(C, D)
-    X = E[1:]
-    Y = F[1:]
-
-    X.insert(0, R[0])
-    Y.insert(0, 0)
-    X.append(R[1])
-    Y.append(0)
+    X += X[:1]
+    Y += Y[:1]
 
     s = 0
     for i in range(len(X)-1):
         s = s + X[i]*Y[i+1] - X[i+1]*Y[i]
+        print(1/2*s)
         # On doit trouver 323
     return 1/2*s
 
-def GZ(teta): 
+def GZ(teta):
     """Revoit le bras de levier entre le centre de masse en position initiale et le centre de masse en fonction de teta"""
     A,B=rotation(0)
     C,D=rotation(teta)
     Z=center_of_mass(A,B)
     G=center_of_mass(C,D)
     return np.sqrt((Z[0]-Z[1])**2+(G[0]-G[1])**2)
-    
-    
+
+
 def metacentre():
     teta=np.pi/65
     A,B=rotation(0)
@@ -139,5 +165,5 @@ def metacentre():
     c3,c4=imerg(C,D)
     C=[c1[0],c2[0]]
     Cp=[c3[0],c4[0]]
-    
+
 
