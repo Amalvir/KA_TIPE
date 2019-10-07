@@ -2,7 +2,7 @@
 
 from Affichage import *
 
-affichage(np.linspace(0, np.pi/3, 1000))
+affichage(np.linspace(0, np.pi/3, 500))
 # affichage(np.pi/40)
 
 L = tri(rotation(np.pi/40))

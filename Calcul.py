@@ -115,7 +115,7 @@ def center_of_buoyancy(X, Z, teta):
     Z += Z[:1]
     s = 0
     t = 0
-    for i in range(0, len(X)-2):
+    for i in range(0, len(X)-1):
         s += (X[i] + X[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
         t += (Z[i] + Z[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
     return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
@@ -135,6 +135,9 @@ def aire_immerg(teta):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
     Rot = tri(rotation(teta, affichage=False) + racines(teta))
     X, Y = immerg(reel(Rot), teta)
+
+    X += X[:1]
+    Y += Y[:1]
 
     s = 0
     for i in range(len(X)-1):
