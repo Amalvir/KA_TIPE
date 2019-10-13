@@ -2,7 +2,7 @@
 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from Calcul import *
+from Calcul import *    # pylint: disable=unused-wildcard-import
 
 
 def init():

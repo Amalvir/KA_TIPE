@@ -1,6 +1,7 @@
 # La où on exécute des trucs (dans les autres y'a que des fonctions)
 
-from Affichage import *
+from Affichage import * # pylint: disable=unused-wildcard-import
+
 
 affichage(np.linspace(0, np.pi/3, 500))
 # affichage(np.pi/40)
