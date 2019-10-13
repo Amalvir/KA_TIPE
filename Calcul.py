@@ -161,8 +161,8 @@ def metacentre():
     C,D=rotation(teta)
     G=center_of_mass(A,B)
     Gp=center_of_mass(C,D)
-    c1,c2=imerg(A,B)
-    c3,c4=imerg(C,D)
+    c1,c2=immerg(A,B)
+    c3,c4=immerg(C,D)
     C=[c1[0],c2[0]]
     Cp=[c3[0],c4[0]]
 
