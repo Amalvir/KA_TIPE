@@ -153,10 +153,17 @@ def GZ(teta):
     Z=center_of_mass(A,B)
     G=center_of_mass(C,D)
     return np.sqrt((Z[0]-Z[1])**2+(G[0]-G[1])**2)
+<<<<<<< HEAD
     
     
 def metacentre_ordonnee(teta):
     
+=======
+
+
+def metacentre():
+    teta=np.pi/65
+>>>>>>> 06ffb3730742f47f327304a35c48be566c5a316d
     A,B=rotation(0)
     C,D=rotation(teta)
     #Coordonnées du centre de gravité au repos et du centre de gravité avec téta
@@ -164,6 +171,7 @@ def metacentre_ordonnee(teta):
     Gp=center_of_mass(C,D)
     c1,c2=immerg(A,B)
     c3,c4=immerg(C,D)
+<<<<<<< HEAD
     #Coordonnées du centre de carène au repos et du centre de carène avec téta
     C=[c1[0],c2[0]]
     Cp=[c3[0],c4[0]]
@@ -178,3 +186,9 @@ def distance_Gmetacentre(teta):
     A,B=rotation(0)
     G=center_of_mass(A,B)
     return metacentre_ordonnee(teta)-G[1]
+=======
+    C=[c1[0],c2[0]]
+    Cp=[c3[0],c4[0]]
+
+
+>>>>>>> 06ffb3730742f47f327304a35c48be566c5a316d
