@@ -97,11 +97,16 @@ def courbe_de_stabilite_statique():
     X=np.linspace(0,np.pi/2) #abscisses de la courbe
     Y=[GZ(x) for x in X ]
     plt.plot(X,Y,label='courbe de stabilitée satique')
-    plt.plot([1,1],[5,8],"--") # verticale pou tangeante à l'origine
+    plt.plot([1,1],[5,8],"--")# verticale pour tangeante à l'origine
+    #plt.plot([0,1.5],[distance_Gmetacentre(),distance_Gmetacentre()],"--") 
     plt.xlabel('teta')
     plt.ylabel('GZ')
     plt.legend()
     plt.show()
 
-
-    
+#pb de positionnement du métacentre 
+def Aff_metacentre_teta():
+    X=np.linspace(0,np.pi/10)
+    Y=[distance_Gmetacentre(x) for x in X ]
+    plt.plot(X,Y)
+    plt.show()
