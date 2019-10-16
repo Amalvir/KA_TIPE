@@ -169,8 +169,8 @@ def metacentre():
     #Coordonnées du centre de gravité au repos et du centre de gravité avec téta
     G=center_of_mass(A,B)
     Gp=center_of_mass(C,D)
-    c1,c2=immerg((A,B)0)
-    c3,c4=immerg(C,D,teta)
+    c1,c2=immerg((A,B), teta)
+    c3,c4=immerg((C,D),teta)
 
     #Coordonnées du centre de carène au repos et du centre de carène avec téta
     C=[c1[0],c2[0]]
