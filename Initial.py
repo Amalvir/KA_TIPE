@@ -2,15 +2,10 @@
 
 from Affichage import * # pylint: disable=unused-wildcard-import
 
-<<<<<<< HEAD
-#affichage(np.linspace(0, np.pi/3, 200))
-#affichage(np.pi/5)
-=======
 affichage(np.linspace(0, np.pi/3, 500))
 # affichage(np.pi/40)
 
 L = tri(rotation(np.pi/40))
->>>>>>> 06ffb3730742f47f327304a35c48be566c5a316d
 
 
 # print(aire_immerg(np.pi/120))
