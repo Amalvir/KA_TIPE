@@ -31,17 +31,29 @@ def rotation(teta, affichage=False):
     else:
         return [Cj, Dj, Aj, Bj]
 
-def tri(L):
-    """Trie la liste en fonction des arguments"""
-    # L = np.angle(A)
-    for k in range(1, len(L)):
-        temp = L[k]
-        j = k
-    while j > 0 and np.angle(temp) < np.angle(L[j-1]):
-        L[j] = L[j-1]
-        j -= 1
-        L[j] = temp
-    return L
+# def tri(L):
+#     """Trie la liste en fonction des arguments"""
+#     # L = np.angle(A)
+#     for k in range(1, len(L)):
+#         temp = L[k]
+#         j = k
+#     while j > 0 and np.angle(temp) < np.angle(L[j-1]):
+#         L[j] = L[j-1]
+#         j -= 1
+#         L[j] = temp
+#     # print(np.angle(L))
+#     return L
+
+def tri(a) :
+    n = len(a)
+    for i in range(n) :
+        k = i
+        for j in range(i+1,n) :
+            if np.angle(a[k]) > np.angle(a[j]) :
+                k = j
+        a[k], a[i] = a[i], a[k]
+    return a
+
 
 
 
@@ -142,7 +154,6 @@ def aire_immerg(teta):
     s = 0
     for i in range(len(X)-1):
         s = s + X[i]*Y[i+1] - X[i+1]*Y[i]
-        print(1/2*s)
         # On doit trouver 323
     return 1/2*s
 

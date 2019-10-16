@@ -10,11 +10,11 @@ I = b*h**3/12   # I est le moment quadratique
 
 class eolienne:
 
-
     def __init__(self, teta):
         self.teta = teta
+        sommets(self)
 
-    @property
+    
     def sommets(self):
         """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
         rDC = ((l/2)**2 + (h-i)**2)**(1/2)
@@ -30,7 +30,29 @@ class eolienne:
 
         return [Cj, Dj, Aj, Bj]
     
+    @property
+    def racines(self):
+        """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
+
+    sol = []
+    # On récupère les coordonnés des points
+    X, Y = np.real(self.sommets), np.complex(self.sommets)
+    for j in range(len(Y) - 1):
+        if Y[j]*Y[j+1] < 0:
+            # On test si les coordonnées Y sont 2 à 2 de même signes
+            # Calcul du coeff directeur de la droite
+            coeff = (Y[j+1] - Y[j])/(X[j+1] - X[j])
+
+            # Système d'équations : (inconnues : x, b)
+            # coeff*x + b = 0
+            # 0*x + b = Y[j] - coeff*X[j]
+            A = np.array([[coeff, 1], [0, 1]])      # Matrices des variables
+            B = np.array([0, Y[j] - coeff*X[j]])    # Matrices des constantes
+            S = np.linalg.solve(A, B)   # Pivot de Gauss
+            sol.append(S[0])    # On a besoin que de x donc on append que S[0]
+    return sol
     
 
 Eoe = eolienne(0).sommets
+Eoe.argsort
 print(Eoe)

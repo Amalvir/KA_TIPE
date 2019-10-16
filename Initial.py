@@ -2,10 +2,10 @@
 
 from Affichage import * # pylint: disable=unused-wildcard-import
 
-affichage(np.linspace(0, np.pi/3, 500))
+affichage(np.linspace(0, 2*np.pi, 500))
 # affichage(np.pi/40)
 
-L = tri(rotation(np.pi/40))
+# L = tri(rotation(np.pi/40))
 
 
 # print(aire_immerg(np.pi/120))
@@ -14,4 +14,4 @@ L = tri(rotation(np.pi/40))
 # plt.plot(X, Y)
 # plt.show()
 
-courbe_de_stabilite_statique()
+# courbe_de_stabilite_statique()
