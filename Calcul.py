@@ -31,17 +31,29 @@ def rotation(teta, affichage=False):
     else:
         return [Cj, Dj, Aj, Bj]
 
-def tri(L):
-    """Trie la liste en fonction des arguments"""
-    # L = np.angle(A)
-    for k in range(1, len(L)):
-        temp = L[k]
-        j = k
-    while j > 0 and np.angle(temp) < np.angle(L[j-1]):
-        L[j] = L[j-1]
-        j -= 1
-        L[j] = temp
-    return L
+# def tri(L):
+#     """Trie la liste en fonction des arguments"""
+#     # L = np.angle(A)
+#     for k in range(1, len(L)):
+#         temp = L[k]
+#         j = k
+#     while j > 0 and np.angle(temp) < np.angle(L[j-1]):
+#         L[j] = L[j-1]
+#         j -= 1
+#         L[j] = temp
+#     # print(np.angle(L))
+#     return L
+
+def tri(a) :
+    n = len(a)
+    for i in range(n) :
+        k = i
+        for j in range(i+1,n) :
+            if np.angle(a[k]) > np.angle(a[j]) :
+                k = j
+        a[k], a[i] = a[i], a[k]
+    return a
+
 
 
 
@@ -168,8 +180,14 @@ def metacentre():
     #Coordonnées du centre de gravité au repos et du centre de gravité avec téta
     G=center_of_mass(A,B)
     Gp=center_of_mass(C,D)
+
     c1,c2=immerg((A,B),0)
     c3,c4=immerg((C,D),teta)
+
+    c1,c2=immerg((A,B), teta)
+    c3,c4=immerg((C,D),teta)
+
+
     #Coordonnées du centre de carène au repos et du centre de carène avec téta
     C=[c1[0],c2[0]]
     Cp=[c3[0],c4[0]]

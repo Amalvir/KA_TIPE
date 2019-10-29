@@ -11,6 +11,10 @@ from Affichage import * # pylint: disable=unused-wildcard-import
 
 #L = tri(rotation(np.pi/40))
 
+affichage(np.linspace(0, 2*np.pi, 2000))
+# affichage(np.pi/40)
+
+# L = tri(rotation(np.pi/40))
 
 
 # print(aire_immerg(np.pi/120))
@@ -23,3 +27,6 @@ Z=[fMSIT(teta) for teta in X]
 plt.plot(X,Z)
 
 #courbe_de_stabilite_statique()
+
+# courbe_de_stabilite_statique()
+
