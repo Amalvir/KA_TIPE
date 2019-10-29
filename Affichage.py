@@ -90,11 +90,14 @@ def non_anim(teta):
 
 
 def courbe_de_stabilite_statique():
-    X=np.linspace(0,np.pi/2) #abscisses de la courbe
+    X=np.linspace(0,2*np.pi) #abscisses de la courbe
     Y=[GZ(x) for x in X ]
     plt.plot(X,Y,label='courbe de stabilitée satique')
-    plt.plot([1,1],[5,8],"--")# verticale pour tangeante à l'origine
-    #plt.plot([0,1.5],[distance_Gmetacentre(),distance_Gmetacentre()],"--") 
+    #plt.plot([1,1],[5,8],"--")# verticale pour tangeante à l'origine
+    #plt.plot([0,1.5],[distance_Gmetacentre(),distance_Gmetacentre()],"--")  #Gm pour construire la tangeante à l'origine
+    plt.plot([0,1],[0,distance_Gmetacentre()],label='tangeante à l origine') #tangeante à l'origine
+     #MSIT
+    plt.plot(X,Z)
     plt.xlabel('teta')
     plt.ylabel('GZ')
     plt.legend()

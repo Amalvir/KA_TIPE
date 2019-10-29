@@ -1,7 +1,7 @@
 # La où y'a les calculs
 
 import numpy as np
-
+import matplotlib.pyplot as plt
 # Constante
 b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
@@ -138,11 +138,9 @@ def aire_immerg(teta):
 
     X += X[:1]
     Y += Y[:1]
-
     s = 0
     for i in range(len(X)-1):
         s = s + X[i]*Y[i+1] - X[i+1]*Y[i]
-        print(1/2*s)
         # On doit trouver 323
     return 1/2*s
 
@@ -152,7 +150,7 @@ def GZ(teta):
     C,D=reel(rotation(teta))
     Z=center_of_mass(A,B)
     G=center_of_mass(C,D)
-    return np.sqrt((Z[0]-Z[1])**2+(G[0]-G[1])**2)
+    return np.sqrt((Z[0]-G[0])**2+(Z[1]-G[1])**2)
 
     
     
@@ -163,15 +161,15 @@ def GZ(teta):
 
 def metacentre():
     teta=np.pi/65
+    
 
     A,B=reel(rotation(0))
     C,D=reel(rotation(teta))
     #Coordonnées du centre de gravité au repos et du centre de gravité avec téta
     G=center_of_mass(A,B)
     Gp=center_of_mass(C,D)
-    c1,c2=immerg((A,B)0)
-    c3,c4=immerg(C,D,teta)
-
+    c1,c2=immerg((A,B),0)
+    c3,c4=immerg((C,D),teta)
     #Coordonnées du centre de carène au repos et du centre de carène avec téta
     C=[c1[0],c2[0]]
     Cp=[c3[0],c4[0]]
@@ -182,10 +180,14 @@ def metacentre():
     ym=Gp[1]-coeff_dir*Gp[0]
     return (ym)
     
-def distance_Gmetacentre(teta):
+def distance_Gmetacentre():
     A,B=reel(rotation(0))
     G=center_of_mass(A,B)
-    return metacentre_ordonnee(teta)-G[1]
-    C=[c1[0],c2[0]]
-    Cp=[c3[0],c4[0]]
+    return abs(metacentre()+G[1])
+    # C=[c1[0],c2[0]]
+    # Cp=[c3[0],c4[0]]
 
+# X=np.linspace(0,np.pi/2)
+# Y=[metacentre(x) for x in X]
+# plt.plot(X,Y)
+# plt.show()
