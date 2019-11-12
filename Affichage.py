@@ -7,6 +7,9 @@ from Calcul import *    # pylint: disable=unused-wildcard-import
 
 def init():
     """Plot les conditions initiales"""
+    robj = 0.9*10**3   # Masse volumique de l'objet en kg/m^3
+    rofl = 10**3   # Masse volumique du fluide kg/m^3
+    i = robj/rofl*h
 
     X, Z = reel(rotation(0, affichage=True))
     EAU = [-2*l, 2*l]
@@ -43,6 +46,7 @@ def affichage(teta):
 
 def anim(teta, fig, ax):
     """Fonction qui génère l'animation"""
+    init_robj(0)
     X, Z = reel(rotation(0, affichage=True))
     rect = ax.plot(X, Z)[0]
     plot1 = ax.plot([], [], 'o', color="orange")[0]
@@ -52,6 +56,7 @@ def anim(teta, fig, ax):
     init()
 
     def animate(agl):
+        init_robj(agl)
         root = racines(agl)
         Rot = rotation(agl, affichage=False)
         X, Z = reel(tri(Rot))   # On convertie et on trie les points
