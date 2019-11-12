@@ -64,7 +64,7 @@ def anim(teta, fig, ax):
         X, Z = reel(tri(Rot + root))
         Xb, Zb = immerg((X, Z), agl)   # Point immergé
         Xbb, Zbb = center_of_buoyancy(Xb, Zb, agl)  # Centre de buyocency
-        X, Z = reel(tri(rotation(agl, True)))
+        X, Z = reel(rotation(agl, True))
         rect.set_data(X, Z)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
@@ -74,6 +74,7 @@ def anim(teta, fig, ax):
         return rect, plot1, plot2, buoyency, grav
 
     ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=15)
+    # ani.save("animation.mp4")
     plt.show()
 
 
