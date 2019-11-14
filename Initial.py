@@ -3,30 +3,20 @@
 from Affichage import * # pylint: disable=unused-wildcard-import
 
 
-affichage(np.linspace(0, np.pi/3, 200))
-#affichage(np.pi/5)
-
-#affichage(np.linspace(0, np.pi/3, 500))
-# affichage(np.pi/40)
-
-#L = tri(rotation(np.pi/40))
-
-affichage(np.linspace(0, 2*np.pi, 2000))
+# affichage(np.linspace(0, np.pi/3, 500))
 # affichage(np.pi/40)
 
 # L = tri(rotation(np.pi/40))
-
+teta = np.pi/40
+X = np.linspace(0.1, h)
+Y = [aire_immerg(teta, a=k) for k in X]
+plt.plot(X, Y)
+plt.show()
 
 # print(aire_immerg(np.pi/120))
 # X = np.linspace(0, np.pi/40, 100)
 # Y = [aire_immerg(teta) for teta in X]
 # plt.plot(X, Y)
 # plt.show()
-# X=np.linspace(0,2*np.pi,500)
-# Z=[fMSIT(teta) for teta in X]
-# plt.plot(X,Z)
 
-#courbe_de_stabilite_statique()
-
-# courbe_de_stabilite_statique()
-
+# Imposer Aire immergé constante. Rtourné le programme pour faire en fonction de aire immerg et de teta

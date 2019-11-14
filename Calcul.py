@@ -12,14 +12,13 @@ i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique
 
 
-
-def rotation(teta, affichage=False):
+def rotation(teta, affichage=False, a=i):
     """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
-    rDC = ((l/2)**2 + (h-i)**2)**(1/2)
-    rAB = (i**2 + (l/2)**2)**(1/2)
+    rDC = ((l/2)**2 + (h-a)**2)**(1/2)
+    rAB = (a**2 + (l/2)**2)**(1/2)
 
-    phiDC = np.arctan((h - i)/(l/2))
-    phiAB = np.arctan((i/(l/2)))
+    phiDC = np.arctan((h - a)/(l/2))
+    phiAB = np.arctan((a/(l/2)))
 
     Cj = rDC*np.exp(1j*(phiDC + teta))
     Dj = rDC*np.exp(1j*(np.pi - phiDC + teta))
@@ -143,9 +142,9 @@ def fMSIT(teta):
     return rofl*(I-(aire_immerg(teta)*b*distance_entreGC(teta)))
 
 
-def aire_immerg(teta):
+def aire_immerg(teta, a=i):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    Rot = tri(rotation(teta, affichage=False) + racines(teta))
+    Rot = tri(rotation(teta, affichage=False, a=a) + racines(teta))
     X, Y = immerg(reel(Rot), teta)
 
     X += X[:1]
