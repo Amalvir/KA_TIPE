@@ -130,9 +130,9 @@ def fMSIT(teta):
     return rofl*(I-(aire_immerg(teta)*b*distance_entreGC(teta)))
 
 
-def aire_immerg(teta):
+def aire_immerg(teta, a=i):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    Rot = tri(rotation(teta, affichage=False) + racines(teta))
+    Rot = tri(rotation(teta, affichage=False, a=a) + racines(teta))
     X, Y = immerg(reel(Rot), teta)
 
     X += X[:1]
