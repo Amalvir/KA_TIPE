@@ -3,3 +3,5 @@ __pycache__/Calcul.cpython-37.pyc
 __pycache__/Initial.cpython-37.pyc
 __pycache__/Volume.cpython-37.pyc
 .idea/workspace.xml
+.vscode/.ropeproject/objectdb
+.vscode/.ropeproject/config.py
