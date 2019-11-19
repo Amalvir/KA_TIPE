@@ -2,28 +2,56 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.optimize as sc
 # Constante
 b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
 l = 34
-robj = 0.9*10**3   # Masse volumique de l'objet en kg/m^3
+robj = 0.7*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique
+A = i*l
 
+def ajust(teta):
+    def f(x):
+        return A - aire_immerg(teta, a=x, ajust=0)
 
-def rotation(teta, affichage=False, a=i):
+    return sc.newton(f, i)
+
+def rotation(teta, affichage=False, a=i, ajust=0):
     """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
-    rDC = ((l/2)**2 + (h-a)**2)**(1/2)
-    rAB = (a**2 + (l/2)**2)**(1/2)
+    X = np.linspace(-h, h)
+    k = 0
 
-    phiDC = np.arctan((h - a)/(l/2))
-    phiAB = np.arctan((a/(l/2)))
+    
+    while k < len(X):
+        rDC = ((l/2)**2 + (h-a)**2)**(1/2)
+        rAB = (a**2 + (l/2)**2)**(1/2)
 
-    Cj = rDC*np.exp(1j*(phiDC + teta))
-    Dj = rDC*np.exp(1j*(np.pi - phiDC + teta))
-    Bj = rAB*np.exp(1j*(teta - phiAB))
-    Aj = rAB*np.exp(1j*(np.pi + phiAB + teta))
+        phiDC = np.arctan((h - a)/(l/2))
+        phiAB = np.arctan((a/(l/2)))
+
+        Cj = rDC*np.exp(1j*(phiDC + teta)) + 1j*ajust
+        Dj = rDC*np.exp(1j*(np.pi - phiDC + teta)) + 1j*ajust
+        Bj = rAB*np.exp(1j*(teta - phiAB)) + 1j*ajust
+        Aj = rAB*np.exp(1j*(np.pi + phiAB + teta)) + 1j*ajust
+
+        def aire_immerg(teta, a=i, ajust=0):
+            """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
+            Rot = [Cj, Dj, Aj, Bj]
+            X, Y = immerg(reel(Rot), teta)
+
+            X += X[:1]
+            Y += Y[:1]
+            s = 0
+            for k in range(len(X)-1):
+                s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
+                # On doit trouver 323
+            return 1/2*s
+        if A - aire_immerg(teta, a=X[k]):
+            break
+        k += 1
 
     if affichage:
         return [Cj, Dj, Aj, Bj, Cj]
@@ -74,6 +102,9 @@ def racines(teta):
 
     for j in range(len(Y) - 1):
         if Y[j]*Y[j+1] < 0:
+            if X[j+1] - X[j] == 0:
+                return [l/2, -l/2]
+
             # On test si les coordonnées Y sont 2 à 2 de même signes
             # Calcul du coeff directeur de la droite
             coeff = (Y[j+1] - Y[j])/(X[j+1] - X[j])
@@ -142,9 +173,9 @@ def fMSIT(teta):
     return rofl*(I-(aire_immerg(teta)*b*distance_entreGC(teta)))
 
 
-def aire_immerg(teta, a=i):
+def aire_immerg(teta, a=i, ajust=0):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    Rot = tri(rotation(teta, affichage=False, a=a) + racines(teta))
+    Rot = tri(rotation(teta, affichage=False,a=a, ajust=ajust) + racines(teta))
     X, Y = immerg(reel(Rot), teta)
 
     X += X[:1]
@@ -162,11 +193,6 @@ def GZ(teta):
     Z=center_of_mass(A,B)
     G=center_of_mass(C,D)
     return np.sqrt((Z[0]-G[0])**2+(Z[1]-G[1])**2)
-
-    
-    
-
-    
 
 
 

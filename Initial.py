@@ -3,13 +3,18 @@
 from Affichage import * # pylint: disable=unused-wildcard-import
 
 
-# affichage(np.linspace(0, np.pi/3, 500))
+affichage(np.linspace(0, np.pi/3, 500))
 # affichage(np.pi/40)
-
-# L = tri(rotation(np.pi/40))
 teta = np.pi/40
-X = np.linspace(0.1, h)
-Y = [aire_immerg(teta, a=k) for k in X]
+a = h/2
+
+def f(x):
+    return A - aire_immerg(teta, a=x, ajust=0)
+
+
+
+X = np.linspace(-h, h)
+Y = [A - aire_immerg(teta, a=k, ajust=0) for k in X]
 plt.plot(X, Y)
 plt.show()
 
