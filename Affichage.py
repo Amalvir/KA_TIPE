@@ -61,6 +61,7 @@ def anim(teta, fig, ax):
         Xbb, Zbb = center_of_buoyancy(Xb, Zb, agl)  # Centre de buyocency
         X, Z = reel(rotation(agl, True))
         rect.set_data(X, Z)
+        print(root)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
         buoyency.set_data(Xbb, Zbb)
