@@ -54,6 +54,7 @@ def anim(teta, fig, ax):
     def animate(agl):
         root = racines(agl)
         Rot = rotation(agl, affichage=False)
+        
         X, Z = reel(tri(Rot))   # On convertie et on trie les points
         xg, zg = center_of_mass(X, Z)   # Point G
         X, Z = reel(tri(Rot + root))
@@ -65,7 +66,6 @@ def anim(teta, fig, ax):
         plot2.set_data(root[1], [0])
         buoyency.set_data(Xbb, Zbb)
         grav.set_data(xg, zg)
-
         return rect, plot1, plot2, buoyency, grav
 
     ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=15)
@@ -91,14 +91,14 @@ def non_anim(teta):
 
 
 def courbe_de_stabilite_statique():
-    X=np.linspace(0,2*np.pi) #abscisses de la courbe
+    X=np.linspace(0,np.pi/2) #abscisses de la courbe
     Y=[GZ(x) for x in X ]
     plt.plot(X,Y,label='courbe de stabilitée satique')
-    #plt.plot([1,1],[5,8],"--")# verticale pour tangeante à l'origine
+    plt.plot([1,1],[0,8],"--")# verticale pour tangeante à l'origine
     #plt.plot([0,1.5],[distance_Gmetacentre(),distance_Gmetacentre()],"--")  #Gm pour construire la tangeante à l'origine
-    plt.plot([0,1],[0,distance_Gmetacentre()],label='tangeante à l origine') #tangeante à l'origine
+   # plt.plot([0,1],[0,distance_Gmetacentre()],label='tangeante à l origine') #tangeante à l'origine
      #MSIT
-    plt.plot(X,Z)
+    plt.plot(X,Y)
     plt.xlabel('teta')
     plt.ylabel('GZ')
     plt.legend()
@@ -110,3 +110,4 @@ def Aff_metacentre_teta():
     Y=[distance_Gmetacentre(x) for x in X ]
     plt.plot(X,Y)
     plt.show()
+    

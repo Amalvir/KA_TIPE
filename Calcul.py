@@ -2,6 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.integrate as sc
 # Constante
 b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
@@ -9,7 +10,8 @@ l = 34
 robj = 0.9*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
-I = b*h**3/12   # I est le moment quadratique
+I = b*h**3/12   # I est le moment quadratique du pavé
+aire_immergee=h*l*robj/rofl 
 
 
 
@@ -132,15 +134,22 @@ def center_of_buoyancy(X, Z, teta):
         t += (Z[i] + Z[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
     return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
 
-def distance_entreGC(teta):
+def distance_entreGC(teta,quoi=None):
+    """renvoie la distance entre le centre de poussé et le centre de gravité"""
     X ,Z = reel(rotation(teta))
     x, z = immerg((X, Z), teta)
-    return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2 + (center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
+    if quoi==None:
+        return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2 + (center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
     
+    
+    elif quoi==True:
+        return center_of_mass(x,z)[0]-center_of_mass(X,Z)[0]
+    elif quoi==False:
+        return center_of_mass(x,z)[1]-center_of_mass(X,Z)[1]
 
 # MSIT=rofl*(I-Vc*a) 
 def fMSIT(teta):
-    return rofl*(I-(aire_immerg(teta)*b*distance_entreGC(teta)))
+    return rofl*(I-(aire_immergee*b*distance_entreGC(teta))) #G est au dessus de c donc on compte positivement la distance gc #On a besoin du moment quadratique du volume immergé
 
 
 def aire_immerg(teta):
@@ -158,22 +167,18 @@ def aire_immerg(teta):
 
 def GZ(teta):
     """Revoit le bras de levier entre le centre de masse en position initiale et le centre de masse en fonction de teta"""
-    A,B=reel(rotation(0))
-    C,D=reel(rotation(teta))
-    Z=center_of_mass(A,B)
-    G=center_of_mass(C,D)
+    A,B=reel(rotation(0)) #listes des abscisses et des ordonnées des coordonnées des sommets de notre rectangle initial
+    C,D=reel(rotation(teta)) #listes des abscisses et des ordonnées des coordonnées des sommets de notre rectangle avec un angle têta 
+    G=center_of_mass(A,B)
+    Z=center_of_mass(C,D)
     return np.sqrt((Z[0]-G[0])**2+(Z[1]-G[1])**2)
 
     
-    
-
-    
 
 
-
-def metacentre():
-    teta=np.pi/65
-    
+def metacentre(teta):
+    """renvoie la position du métacentre, cependant la position du métacentre n'est pas constante, on suppose que que c'est le cas pour le petits angles et on considère pi/65 comme un petit angle"""
+    #Ateta=np.pi/65
 
     A,B=reel(rotation(0))
     C,D=reel(rotation(teta))
@@ -197,11 +202,13 @@ def metacentre():
     #L'ordonnée à l'origine de (Gp,Cp) correspond à l'ordonnée du métacentre
     ym=Gp[1]-coeff_dir*Gp[0]
     return (ym)
+
+
     
-def distance_Gmetacentre():
+def distance_Gmetacentre(teta):
     A,B=reel(rotation(0))
     G=center_of_mass(A,B)
-    return abs(metacentre()+G[1])
+    return abs(metacentre(teta)+G[1])
     # C=[c1[0],c2[0]]
     # Cp=[c3[0],c4[0]]
 
@@ -209,3 +216,36 @@ def distance_Gmetacentre():
 # Y=[metacentre(x) for x in X]
 # plt.plot(X,Y)
 # plt.show()
+#
+def fonct(x,y):
+        return (x**2+y**2)
+
+def calcul_du_moment_quadratique(teta):
+    
+    x,y=immerg(teta)
+    if len(x)==3:
+        def x1 (y):
+            return x[1]+(y-y[1])*(x[0]-x[1])/(y[0]-y[1])
+        def x2(y):
+            return x[1]+(y-y[1])*(x[2]-x[1])/(y[2]-y[1])
+        
+        def int(y):
+            return y**2*(x2(y)-x1(y))+ x2(y)**3/3-x1(y)**3/3 
+        
+        return sc.quad(int,y[1],0)
+        
+    if len(x)==5:
+        #Partie inferieure de l'intégrale
+        def x1 (y):
+            return x[2]+(y-y[2])*(x[1]-x[2])/(y[1]-y[2])
+        def x2(y):
+            return x[2]+(y-y[2])*(x[3]-x[2])/(y[3]-y[2])
+        
+        def int(y):
+            return y**2*(x2(y)-x1(y))+ x2(y)**3/3-x1(y)**3/3 
+            
+        
+            
+        #return sc.quad(int,y[2],y[1])+
+    
+        
