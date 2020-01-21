@@ -14,14 +14,13 @@ I = b*h**3/12   # I est le moment quadratique du pavé
 aire_immergee=h*l*robj/rofl 
 
 
-
-def rotation(teta, affichage=False):
+def rotation(teta, affichage=False, a=i):
     """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
-    rDC = ((l/2)**2 + (h-i)**2)**(1/2)
-    rAB = (i**2 + (l/2)**2)**(1/2)
+    rDC = ((l/2)**2 + (h-a)**2)**(1/2)
+    rAB = (a**2 + (l/2)**2)**(1/2)
 
-    phiDC = np.arctan((h - i)/(l/2))
-    phiAB = np.arctan((i/(l/2)))
+    phiDC = np.arctan((h - a)/(l/2))
+    phiAB = np.arctan((a/(l/2)))
 
     Cj = rDC*np.exp(1j*(phiDC + teta))
     Dj = rDC*np.exp(1j*(np.pi - phiDC + teta))
@@ -63,9 +62,9 @@ def reel(L):
     """D'une liste de complexe, renvoie les coords X et Y"""
     X = []
     Y = []
-    for i in L:
-        X.append(i.real)
-        Y.append(i.imag)
+    for k in L:
+        X.append(k.real)
+        Y.append(k.imag)
     return (X, Y)
 
 def racines(teta):
@@ -129,9 +128,9 @@ def center_of_buoyancy(X, Z, teta):
     Z += Z[:1]
     s = 0
     t = 0
-    for i in range(0, len(X)-1):
-        s += (X[i] + X[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
-        t += (Z[i] + Z[i+1])*(X[i]*Z[i+1]-X[i+1]*Z[i])
+    for k in range(0, len(X)-1):
+        s += (X[k] + X[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
+        t += (Z[k] + Z[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
     return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
 
 def distance_entreGC(teta,quoi=None):
@@ -152,16 +151,16 @@ def fMSIT(teta):
     return rofl*(I-(aire_immergee*b*distance_entreGC(teta))) #G est au dessus de c donc on compte positivement la distance gc #On a besoin du moment quadratique du volume immergé
 
 
-def aire_immerg(teta):
+def aire_immerg(teta, a=i):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    Rot = tri(rotation(teta, affichage=False) + racines(teta))
+    Rot = tri(rotation(teta, affichage=False, a=a) + racines(teta))
     X, Y = immerg(reel(Rot), teta)
 
     X += X[:1]
     Y += Y[:1]
     s = 0
-    for i in range(len(X)-1):
-        s = s + X[i]*Y[i+1] - X[i+1]*Y[i]
+    for k in range(len(X)-1):
+        s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
         # On doit trouver 323
     return 1/2*s
 
