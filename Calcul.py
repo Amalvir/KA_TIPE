@@ -2,35 +2,64 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+<<<<<<< HEAD
 import scipy.integrate as sc
+=======
+import scipy.optimize as sc
+>>>>>>> Sam
 # Constante
 b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
 l = 34
-robj = 0.9*10**3   # Masse volumique de l'objet en kg/m^3
+robj = 0.7*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique du pavé
 aire_immergee=h*l*robj/rofl 
 
+def ajust(teta):
+    def f(x):
+        return A - aire_immerg(teta, a=x, ajust=0)
 
-def rotation(teta, affichage=False, a=i):
+    return sc.newton(f, i)
+
+def rotation(teta, affichage=False, a=i, ajust=0):
     """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
-    rDC = ((l/2)**2 + (h-a)**2)**(1/2)
-    rAB = (a**2 + (l/2)**2)**(1/2)
 
-    phiDC = np.arctan((h - a)/(l/2))
-    phiAB = np.arctan((a/(l/2)))
+    def g(x):
+        rDC = ((l/2)**2 + (h-x)**2)**(1/2)
+        rAB = (x**2 + (l/2)**2)**(1/2)
 
-    Cj = rDC*np.exp(1j*(phiDC + teta))
-    Dj = rDC*np.exp(1j*(np.pi - phiDC + teta))
-    Bj = rAB*np.exp(1j*(teta - phiAB))
-    Aj = rAB*np.exp(1j*(np.pi + phiAB + teta))
+        phiDC = np.arctan((h - x)/(l/2))
+        phiAB = np.arctan((x/(l/2)))
 
-    if affichage:
+        Cj = rDC*np.exp(1j*(phiDC + teta)) + 1j*ajust
+        Dj = rDC*np.exp(1j*(np.pi - phiDC + teta)) + 1j*ajust
+        Bj = rAB*np.exp(1j*(teta - phiAB)) + 1j*ajust
+        Aj = rAB*np.exp(1j*(np.pi + phiAB + teta)) + 1j*ajust
         return [Cj, Dj, Aj, Bj, Cj]
+
+    def f(x):
+        Rot = g(x)
+        X, Y = immerg(reel(Rot), teta)
+        s = 0
+        for k in range(len(X)-1):
+            s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
+        print(A - 1/2*s)
+        return A - 1/2*s
+    # X = np.linspace(0.001,h)
+    # Y = [f(x) for x in X]
+    # plt.plot(X, Y)
+    # plt.show()
+    if teta == 0:
+        L = g(i)
     else:
-        return [Cj, Dj, Aj, Bj]
+        L = g(sc.newton(f, i))
+    
+    if affichage:
+        return L
+    else:
+        return L[:-1]
 
 # def tri(L):
 #     """Trie la liste en fonction des arguments"""
@@ -76,6 +105,9 @@ def racines(teta):
 
     for j in range(len(Y) - 1):
         if Y[j]*Y[j+1] < 0:
+            if X[j+1] - X[j] == 0:
+                return [l/2, -l/2]
+
             # On test si les coordonnées Y sont 2 à 2 de même signes
             # Calcul du coeff directeur de la droite
             coeff = (Y[j+1] - Y[j])/(X[j+1] - X[j])
@@ -131,7 +163,8 @@ def center_of_buoyancy(X, Z, teta):
     for k in range(0, len(X)-1):
         s += (X[k] + X[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
         t += (Z[k] + Z[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
-    return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
+    # return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
+    return 1/(6*A)*s, 1/(6*A)*t
 
 def distance_entreGC(teta,quoi=None):
     """renvoie la distance entre le centre de poussé et le centre de gravité"""
@@ -151,13 +184,13 @@ def fMSIT(teta):
     return rofl*(I-(aire_immergee*b*distance_entreGC(teta))) #G est au dessus de c donc on compte positivement la distance gc #On a besoin du moment quadratique du volume immergé
 
 
-def aire_immerg(teta, a=i):
+def aire_immerg(teta, a=i, ajust=0):
     """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    Rot = tri(rotation(teta, affichage=False, a=a) + racines(teta))
+    Rot = tri(rotation(teta, affichage=True,a=a, ajust=ajust) + racines(teta))
     X, Y = immerg(reel(Rot), teta)
 
-    X += X[:1]
-    Y += Y[:1]
+    # X += X[:1]
+    # Y += Y[:1]
     s = 0
     for k in range(len(X)-1):
         s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
@@ -171,8 +204,6 @@ def GZ(teta):
     G=center_of_mass(A,B)
     Z=center_of_mass(C,D)
     return np.sqrt((Z[0]-G[0])**2+(Z[1]-G[1])**2)
-
-    
 
 
 def metacentre(teta):

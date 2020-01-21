@@ -7,16 +7,13 @@ from Calcul import *    # pylint: disable=unused-wildcard-import
 
 def init():
     """Plot les conditions initiales"""
-    robj = 0.9*10**3   # Masse volumique de l'objet en kg/m^3
-    rofl = 10**3   # Masse volumique du fluide kg/m^3
-    i = robj/rofl*h
 
     X, Z = reel(rotation(0, affichage=True))
     EAU = [-2*l, 2*l]
     NIV_EAU = [0, 0]
 
-    plt.plot([0], [(h - 2*i)/2], 'o', color='red', label='G')
-    plt.plot([0], [-i/2], 'o', color='green', label='C')
+    plt.plot([0], [(Z[1] + Z[2])/2], 'o', color='red', label='G')
+    plt.plot([0], [Z[3]/2], 'o', color='green', label='C')
     plt.plot([0], [0], 'o', color='gray', label='O')
     plt.plot(X, Z)
     plt.plot(EAU, NIV_EAU, label='eau')
@@ -46,7 +43,6 @@ def affichage(teta):
 
 def anim(teta, fig, ax):
     """Fonction qui génère l'animation"""
-    init_robj(0)
     X, Z = reel(rotation(0, affichage=True))
     rect = ax.plot(X, Z)[0]
     plot1 = ax.plot([], [], 'o', color="orange")[0]
@@ -56,7 +52,6 @@ def anim(teta, fig, ax):
     init()
 
     def animate(agl):
-        init_robj(agl)
         root = racines(agl)
         Rot = rotation(agl, affichage=False)
         
@@ -67,6 +62,7 @@ def anim(teta, fig, ax):
         Xbb, Zbb = center_of_buoyancy(Xb, Zb, agl)  # Centre de buyocency
         X, Z = reel(rotation(agl, True))
         rect.set_data(X, Z)
+        print(root)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
         buoyency.set_data(Xbb, Zbb)
