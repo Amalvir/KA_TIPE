@@ -2,11 +2,9 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-<<<<<<< HEAD
 import scipy.integrate as sc
-=======
 import scipy.optimize as sc
->>>>>>> Sam
+
 # Constante
 b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 9.5
