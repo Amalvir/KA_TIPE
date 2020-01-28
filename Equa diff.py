@@ -16,7 +16,7 @@ h = 9.5
 l = 34
 robj = 0.9*10**3   # Masse volumique de l'objet en kg/m^3
 g=9.81
-angle_de_dep=np.pi/3
+angle_de_dep=-np.pi/65
 aire_immergee=h*l*robj/rofl
 J= robj*h*l*b*(h**2+l**2)/12 #moment d'inertie du pavé flottant
 
