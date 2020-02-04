@@ -13,13 +13,13 @@ robj = 0.7*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique du pavé
-aire_immergee=h*l*robj/rofl 
+A = h*l*robj/rofl 
 
 def ajust(teta):
     def f(x):
         return A - aire_immerg(teta, a=x, ajust=0)
 
-    return sc.newton(f, i)
+    d = 
 
 def rotation(teta, affichage=False, a=i, ajust=0):
     """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
@@ -179,7 +179,7 @@ def distance_entreGC(teta,quoi=None):
 
 # MSIT=rofl*(I-Vc*a) 
 def fMSIT(teta):
-    return rofl*(I-(aire_immergee*b*distance_entreGC(teta))) #G est au dessus de c donc on compte positivement la distance gc #On a besoin du moment quadratique du volume immergé
+    return rofl*(I-(A*b*distance_entreGC(teta))) #G est au dessus de c donc on compte positivement la distance gc #On a besoin du moment quadratique du volume immergé
 
 
 def aire_immerg(teta, a=i, ajust=0):
