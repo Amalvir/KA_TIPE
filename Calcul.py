@@ -14,19 +14,34 @@ rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique du pavé
 A = h*l*robj/rofl 
-rectangle = np.array([[l, 0],
-                      [l, h],
-                      [-l, h],
-                      [-l, 0],
-                      [-l, -h],
-                      [l, -h]])
 
-def rotation(teta):
-    """Fais tourner rectangle d'un angle teta"""
-    Rot = np.array([[np.cos(teta), -np.sin(teta)],
-                    [np.sin(teta), np.cos(teta)]])
-    
-    rectangle = np.dot(rectangle, Rot)
+class Rectangle:
+    """Notre objet rectangle"""
+
+    def __init__(self):
+        self.coords = np.array([[l, 0],
+                                [l, h],
+                                [-l, h],
+                                [-l, 0],
+                                [-l, -h],
+                                [l, -h]])
+        self.masque_aff = np.array([[False, False],
+                                    [True, True],
+                                    [True, True],
+                                    [False, False],
+                                    [True, True],
+                                    [True, True]])
+        self.aff = self.coords[self.masque_aff]
+        self.aff.shape = (4,2)
+
+    def rotation(self, teta):
+        """Fais tourner rectangle d'un angle teta"""
+        teta = -teta
+        Rot = np.array([[np.cos(teta), -np.sin(teta)],
+                        [np.sin(teta), np.cos(teta)]])
+        
+        self.aff = np.dot(self.aff, Rot)
+
 
 def aire(pol):
     """Calcul l'aire d'un polynome quelconque dont les points sont triés par arguments"""
@@ -36,13 +51,24 @@ def aire(pol):
         s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
         # On doit trouver 323
     return 1/2*s
+def f(x):
+    pol = immerg()
+    aire_im = aire(pol)
+    return A - aire_im
 
 def translation():
     """Ajuste la hauteur du rectangle pour répondre aux conditions d'Archimède"""
-    pol = immerg()
-    aire_im = aire(pol)
-    while abs(A - aire_im) > 5:
-        
+    a, b = -l/2, l/2
+    while b-a > 1:
+        c = (a+b)/2
+        if f(a)*f(c) <= 0:
+            b = c
+        else:
+            a = c
+    global rectangle
+    rectangle += a
+
+
     
 
 
@@ -141,7 +167,7 @@ def racines(teta):
             B = np.array([0, Y[j] - coeff*X[j]])    # Matrices des constantes
             S = np.linalg.solve(A, B)   # Pivot de Gauss
             sol.append(S[0])    # On a besoin que de x donc on append que S[0]
-    return sol: list
+    return sol
 
 
 def immerg():
