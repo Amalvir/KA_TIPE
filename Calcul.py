@@ -7,57 +7,81 @@ import scipy.optimize as sc
 
 # Constante
 b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
-h = 9.5
-l = 34
+h = 9.5 # Hauteur
+l = 34  # Largeur
 robj = 0.7*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique du pavé
 A = h*l*robj/rofl 
+rectangle = np.array([[l, 0],
+                      [l, h],
+                      [-l, h],
+                      [-l, 0],
+                      [-l, -h],
+                      [l, -h]])
 
-def ajust(teta):
-    def f(x):
-        return A - aire_immerg(teta, a=x, ajust=0)
-
-    d = 
-
-def rotation(teta, affichage=False, a=i, ajust=0):
-    """Renvoie les listes des X et Z des points ABCD du rectangle ayant fait une rotation teta"""
-
-    def g(x):
-        rDC = ((l/2)**2 + (h-x)**2)**(1/2)
-        rAB = (x**2 + (l/2)**2)**(1/2)
-
-        phiDC = np.arctan((h - x)/(l/2))
-        phiAB = np.arctan((x/(l/2)))
-
-        Cj = rDC*np.exp(1j*(phiDC + teta)) + 1j*ajust
-        Dj = rDC*np.exp(1j*(np.pi - phiDC + teta)) + 1j*ajust
-        Bj = rAB*np.exp(1j*(teta - phiAB)) + 1j*ajust
-        Aj = rAB*np.exp(1j*(np.pi + phiAB + teta)) + 1j*ajust
-        return [Cj, Dj, Aj, Bj, Cj]
-
-    def f(x):
-        Rot = g(x)
-        X, Y = immerg(reel(Rot), teta)
-        s = 0
-        for k in range(len(X)-1):
-            s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
-        print(A - 1/2*s)
-        return A - 1/2*s
-    # X = np.linspace(0.001,h)
-    # Y = [f(x) for x in X]
-    # plt.plot(X, Y)
-    # plt.show()
-    if teta == 0:
-        L = g(i)
-    else:
-        L = g(sc.newton(f, i))
+def rotation(teta):
+    """Fais tourner rectangle d'un angle teta"""
+    Rot = np.array([[np.cos(teta), -np.sin(teta)],
+                    [np.sin(teta), np.cos(teta)]])
     
-    if affichage:
-        return L
-    else:
-        return L[:-1]
+    rectangle = np.dot(rectangle, Rot)
+
+def aire(pol):
+    """Calcul l'aire d'un polynome quelconque dont les points sont triés par arguments"""
+    X, Y = pol[:,0], pol[:,1]
+    s = 0
+    for k in range(len(X)-1):
+        s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
+        # On doit trouver 323
+    return 1/2*s
+
+def translation():
+    """Ajuste la hauteur du rectangle pour répondre aux conditions d'Archimède"""
+    pol = immerg()
+    aire_im = aire(pol)
+    while abs(A - aire_im) > 5:
+        
+    
+
+
+
+
+    # def g(x):
+    #     rDC = ((l/2)**2 + (h-x)**2)**(1/2)
+    #     rAB = (x**2 + (l/2)**2)**(1/2)
+
+    #     phiDC = np.arctan((h - x)/(l/2))
+    #     phiAB = np.arctan((x/(l/2)))
+
+    #     Cj = rDC*np.exp(1j*(phiDC + teta)) + 1j*ajust
+    #     Dj = rDC*np.exp(1j*(np.pi - phiDC + teta)) + 1j*ajust
+    #     Bj = rAB*np.exp(1j*(teta - phiAB)) + 1j*ajust
+    #     Aj = rAB*np.exp(1j*(np.pi + phiAB + teta)) + 1j*ajust
+    #     return [Cj, Dj, Aj, Bj, Cj]
+
+    # def f(x):
+    #     Rot = g(x)
+    #     X, Y = immerg(reel(Rot), teta)
+    #     s = 0
+    #     for k in range(len(X)-1):
+    #         s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
+    #     print(A - 1/2*s)
+    #     return A - 1/2*s
+    # # X = np.linspace(0.001,h)
+    # # Y = [f(x) for x in X]
+    # # plt.plot(X, Y)
+    # # plt.show()
+    # if teta == 0:
+    #     L = g(i)
+    # else:
+    #     L = g(sc.newton(f, i))
+    
+    # if affichage:
+    #     return L
+    # else:
+    #     return L[:-1]
 
 # def tri(L):
 #     """Trie la liste en fonction des arguments"""
@@ -99,7 +123,7 @@ def racines(teta):
 
     sol = []
     # On récupère les coordonnés des points
-    X, Y = reel(rotation(teta, affichage=True))
+    X, Y = rectangle[:,0], rectangle[:,1]
 
     for j in range(len(Y) - 1):
         if Y[j]*Y[j+1] < 0:
@@ -117,25 +141,24 @@ def racines(teta):
             B = np.array([0, Y[j] - coeff*X[j]])    # Matrices des constantes
             S = np.linalg.solve(A, B)   # Pivot de Gauss
             sol.append(S[0])    # On a besoin que de x donc on append que S[0]
-    return sol
+    return sol: list
 
 
-def immerg(coords, teta):
+def immerg():
     """D'une liste de points, renvoie ceux qui sont immergés avec le centre de gravité en premier"""
-    X, Z = coords
-    Z1 = []
-    X1 = []
-    for a in range(len(Z)):
-        if Z[a] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
-            X1.append(X[a])
-            Z1.append(Z[a])
+    shape = rectangle.shape
+    pol = np.zeros(shape)
+    for a in range(shape[1]):
+        if rectangle[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
+            pol[a,0] = rectangle[a,0]
+            pol[a,0] = rectangle[a,0]
     # x1, z1 = center_of_buoyancy(X1, Z1, teta)
     # X1.insert(0, x1)
     # Z1.insert(0, z1)
     # print('X1', X1, 'Z1', Z1, '\n')
-    return X1, Z1
+    return pol
 
-
+immerg()
 def emerg(X, Z):
     """D'une liste de points, renvoie ceux qui sont émergés."""
     Z1 = []

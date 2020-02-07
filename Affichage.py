@@ -8,7 +8,9 @@ from Calcul import *    # pylint: disable=unused-wildcard-import
 def init():
     """Plot les conditions initiales"""
 
-    X, Z = reel(rotation(0, affichage=True))
+    X, Z = list(rectangle[:,0]), list(rectangle[:,1])
+    X.append(rectangle[0, 0])
+    Z.append(rectangle[0, 1])
     EAU = [-2*l, 2*l]
     NIV_EAU = [0, 0]
 
@@ -17,11 +19,12 @@ def init():
     plt.plot([0], [0], 'o', color='gray', label='O')
     plt.plot(X, Z)
     plt.plot(EAU, NIV_EAU, label='eau')
+    plt.show()
     points(0)
 
 
 def points(teta):
-    """Affiche les points ABCD ainsi que leurs noms en fonction de teta"""
+    """Affiche les points ABCD ainsi que leurs noms en foncrectangle de teta"""
     X, Z = reel(rotation(teta))
     P = ['C', 'D', 'A', 'B']
     for j in range(len(P)):
@@ -29,8 +32,8 @@ def points(teta):
         plt.annotate(P[j], xy=(X[j], Z[j]))
 
 
-def affichage(teta):
-    """Crée l'animation si teta est une liste. Crée le rectangle si c'est juste un angle"""
+def affichagrectang(teta):
+    "rectangleée l'animation si terectanglest une rectanglee. Crée le rectangle si c'est juste un angle"""
     fig, ax = plt.subplots(1, figsize=[7, 7])
     ax.axis([-20, 20, -20, 20])
     if isinstance(teta, list) or isinstance(teta, np.ndarray):

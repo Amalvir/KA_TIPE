@@ -3,7 +3,7 @@
 from Affichage import * # pylint: disable=unused-wildcard-import
 
 
-affichage(np.linspace(np.pi/40, np.pi, 500))
+# affichage(np.linspace(np.pi/40, np.pi, 500))
 # affichage(0)
 # teta = np.pi/40
 # a = h/2
