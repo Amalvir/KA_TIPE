@@ -23,4 +23,6 @@ from Affichage import * # pylint: disable=unused-wildcard-import
 # plt.plot(X, Y)
 # plt.show()
 
-# Imposer Aire immergé constante. Rtourné le programme pour faire en fonction de aire immerg et de teta
+rectangle = Rectangle()
+rectangle._rotation(1)
+rectangle._translation()

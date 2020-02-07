@@ -5,7 +5,7 @@ import matplotlib.animation as animation
 from Calcul import *    # pylint: disable=unused-wildcard-import
 
 
-def init():
+def init(rectangle):
     """Plot les conditions initiales"""
 
     X, Z = list(rectangle[:,0]), list(rectangle[:,1])

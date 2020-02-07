@@ -34,13 +34,43 @@ class Rectangle:
         self.aff = self.coords[self.masque_aff]
         self.aff.shape = (4,2)
 
-    def rotation(self, teta):
+    def _rotation(self, teta):
         """Fais tourner rectangle d'un angle teta"""
         teta = -teta
         Rot = np.array([[np.cos(teta), -np.sin(teta)],
                         [np.sin(teta), np.cos(teta)]])
         
         self.aff = np.dot(self.aff, Rot)
+
+    def __f(self, x):
+        return A - self.aire_immerg
+    
+    def _translation(self):
+        """Ajuste la hauteur du rectangle pour répondre aux conditions d'Archimède"""
+        a, b = -l/2, l/2
+        while b-a > 1:
+            c = (a+b)/2
+            if self.__f(a)*self.__f(c) <= 0:
+                b = c
+            else:
+                a = c
+        self.aff += c
+    
+    def _set_racines(self):
+
+    @property
+    def pol_immerg(self):
+        shape = self.coords.shape
+        pol = np.zeros(shape)
+        for a in range(shape[1]):
+            if self.coords[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
+                pol[a,0] = self.coords[a,0]
+                pol[a,1] = self.coords[a,1]
+        return pol
+    
+    @property
+    def aire_immerg(self):
+        return aire(self.pol_immerg)
 
 
 def aire(pol):
@@ -170,21 +200,20 @@ def racines(teta):
     return sol
 
 
-def immerg():
-    """D'une liste de points, renvoie ceux qui sont immergés avec le centre de gravité en premier"""
-    shape = rectangle.shape
-    pol = np.zeros(shape)
-    for a in range(shape[1]):
-        if rectangle[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
-            pol[a,0] = rectangle[a,0]
-            pol[a,0] = rectangle[a,0]
-    # x1, z1 = center_of_buoyancy(X1, Z1, teta)
-    # X1.insert(0, x1)
-    # Z1.insert(0, z1)
-    # print('X1', X1, 'Z1', Z1, '\n')
-    return pol
+# def immerg():
+#     """D'une liste de points, renvoie ceux qui sont immergés avec le centre de gravité en premier"""
+#     shape = rectangle.shape
+#     pol = np.zeros(shape)
+#     for a in range(shape[1]):
+#         if rectangle[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
+#             pol[a,0] = rectangle[a,0]
+#             pol[a,0] = rectangle[a,0]
+#     # x1, z1 = center_of_buoyancy(X1, Z1, teta)
+#     # X1.insert(0, x1)
+#     # Z1.insert(0, z1)
+#     # print('X1', X1, 'Z1', Z1, '\n')
+#     return pol
 
-immerg()
 def emerg(X, Z):
     """D'une liste de points, renvoie ceux qui sont émergés."""
     Z1 = []
