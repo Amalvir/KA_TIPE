@@ -5,12 +5,10 @@ import matplotlib.animation as animation
 from Calcul import *    # pylint: disable=unused-wildcard-import
 
 
-def init(rectangle):
+def init(rect):
     """Plot les conditions initiales"""
 
-    X, Z = list(rectangle[:,0]), list(rectangle[:,1])
-    X.append(rectangle[0, 0])
-    Z.append(rectangle[0, 1])
+    X, Z = rect.X, rect.Z
     EAU = [-2*l, 2*l]
     NIV_EAU = [0, 0]
 
@@ -19,20 +17,19 @@ def init(rectangle):
     plt.plot([0], [0], 'o', color='gray', label='O')
     plt.plot(X, Z)
     plt.plot(EAU, NIV_EAU, label='eau')
-    plt.show()
-    points(0)
+    points(rect)
 
 
-def points(teta):
+def points(rect):
     """Affiche les points ABCD ainsi que leurs noms en foncrectangle de teta"""
-    X, Z = reel(rotation(teta))
+    X, Z = rect.X, rect.Z
     P = ['C', 'D', 'A', 'B']
     for j in range(len(P)):
         plt.plot(X[j], Z[j], 'ob')
         plt.annotate(P[j], xy=(X[j], Z[j]))
 
 
-def affichagrectang(teta):
+def affichage(teta):
     "rectangleée l'animation si terectanglest une rectanglee. Crée le rectangle si c'est juste un angle"""
     fig, ax = plt.subplots(1, figsize=[7, 7])
     ax.axis([-20, 20, -20, 20])
@@ -79,19 +76,21 @@ def anim(teta, fig, ax):
 
 def non_anim(teta):
     """Fonction qui génère la rotation"""
-    init()
-    X, Z = reel(rotation(teta, affichage=True))
+    rect = Rectangle()
+    init(rect)
+    rect._rotation(teta)
+    X, Z = rect.X, rect.Z
     plt.plot(X, Z)
     xg, zg = center_of_mass(X, Z)   # Point G
     plt.plot(xg, zg, 'o', color='red')
-    root = racines(teta)
-    X.extend(root)
-    Z.extend([0]*len(root))
-    Xg, Zg = immerg((X, Z), teta)
-    plt.plot(Xg[0], Zg[0], 'o', color='green')   # Le centre de gravité des points immergé
-    points(teta)
-    for j in root:
-        plt.plot(j, [0], 'o', color="orange")
+    # root = racines(teta)
+    # X.extend(root)
+    # Z.extend([0]*len(root))
+    Xg, Zg = center_of_mass(rect.pol_immerg[:,0], rect.pol_immerg[:,1])
+    plt.plot([Xg], [Zg], 'o', color='green')   # Le centre de gravité des points immergé
+    points(rect)
+    # for j in root:
+    #     plt.plot(j, [0], 'o', color="orange")
 
 
 def courbe_de_stabilite_statique():

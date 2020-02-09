@@ -23,6 +23,4 @@ from Affichage import * # pylint: disable=unused-wildcard-import
 # plt.plot(X, Y)
 # plt.show()
 
-rectangle = Rectangle()
-rectangle._rotation(1)
-rectangle._translation()
+affichage(1)

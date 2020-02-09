@@ -19,28 +19,32 @@ class Rectangle:
     """Notre objet rectangle"""
 
     def __init__(self):
-        self.coords = np.array([[l, 0],
-                                [l, h],
-                                [-l, h],
-                                [-l, 0],
-                                [-l, -h],
-                                [l, -h]])
-        self.masque_aff = np.array([[False, False],
+        self.coords = np.array([[l/2, -h],
+                                [l/2, h],
+                                [-l/2, h],
+                                [-l/2, -h],
+                                [-l/2, 0],
+                                [l/2, 0]])
+        self.masque_aff = np.array([[True, True],
+                                    [True, True],
                                     [True, True],
                                     [True, True],
                                     [False, False],
-                                    [True, True],
-                                    [True, True]])
+                                    [False, False]])
         self.aff = self.coords[self.masque_aff]
-        self.aff.shape = (4,2)
+        self.aff.shape = (4, 2)
+        self.rac = self.coords[~self.masque_aff]
+        self.rac.shape = (2, 2)
+        self.X = list(self.aff[:,0]) + [self.aff[0,0]]
+        self.Z = list(self.aff[:,1]) + [self.aff[0,1]]
+        print(self.X, self.Z)
 
     def _rotation(self, teta):
         """Fais tourner rectangle d'un angle teta"""
-        teta = -teta
         Rot = np.array([[np.cos(teta), -np.sin(teta)],
                         [np.sin(teta), np.cos(teta)]])
-        
-        self.aff = np.dot(self.aff, Rot)
+        for i in range(self.aff.shape[0]):
+            self.aff[i] = np.dot(self.aff[i], Rot)
 
     def __f(self, x):
         return A - self.aire_immerg
@@ -57,6 +61,30 @@ class Rectangle:
         self.aff += c
     
     def _set_racines(self):
+        """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
+        # On récupère les coordonnés des points
+        X, Y = self.aff[:,0], self.aff[:,1]
+        i = 0
+
+        for j in range(len(Y) - 1):
+            if Y[j]*Y[j+1] < 0:
+                if X[j+1] - X[j] == 0:
+                    self.rac = [[-l/2, 0], [l/2, 0]]
+                else:
+
+                    # On test si les coordonnées Y sont 2 à 2 de même signes
+                    # Calcul du coeff directeur de la droite
+                    coeff = (Y[j+1] - Y[j])/(X[j+1] - X[j])
+
+                    # Système d'équations : (inconnues : x, b)
+                    # coeff*x + b = 0
+                    # 0*x + b = Y[j] - coeff*X[j]
+                    A = np.array([[coeff, 1], [0, 1]])      # Matrices des variables
+                    B = np.array([0, Y[j] - coeff*X[j]])    # Matrices des constantes
+                    S = np.linalg.solve(A, B)   # Pivot de Gauss
+                    self.rac[i] = [S[0], 0]    # On a besoin que de x donc on append que S[0]
+                    i += 1
+
 
     @property
     def pol_immerg(self):
@@ -99,68 +127,9 @@ def translation():
     rectangle += a
 
 
-    
 
 
 
-
-    # def g(x):
-    #     rDC = ((l/2)**2 + (h-x)**2)**(1/2)
-    #     rAB = (x**2 + (l/2)**2)**(1/2)
-
-    #     phiDC = np.arctan((h - x)/(l/2))
-    #     phiAB = np.arctan((x/(l/2)))
-
-    #     Cj = rDC*np.exp(1j*(phiDC + teta)) + 1j*ajust
-    #     Dj = rDC*np.exp(1j*(np.pi - phiDC + teta)) + 1j*ajust
-    #     Bj = rAB*np.exp(1j*(teta - phiAB)) + 1j*ajust
-    #     Aj = rAB*np.exp(1j*(np.pi + phiAB + teta)) + 1j*ajust
-    #     return [Cj, Dj, Aj, Bj, Cj]
-
-    # def f(x):
-    #     Rot = g(x)
-    #     X, Y = immerg(reel(Rot), teta)
-    #     s = 0
-    #     for k in range(len(X)-1):
-    #         s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
-    #     print(A - 1/2*s)
-    #     return A - 1/2*s
-    # # X = np.linspace(0.001,h)
-    # # Y = [f(x) for x in X]
-    # # plt.plot(X, Y)
-    # # plt.show()
-    # if teta == 0:
-    #     L = g(i)
-    # else:
-    #     L = g(sc.newton(f, i))
-    
-    # if affichage:
-    #     return L
-    # else:
-    #     return L[:-1]
-
-# def tri(L):
-#     """Trie la liste en fonction des arguments"""
-#     # L = np.angle(A)
-#     for k in range(1, len(L)):
-#         temp = L[k]
-#         j = k
-#     while j > 0 and np.angle(temp) < np.angle(L[j-1]):
-#         L[j] = L[j-1]
-#         j -= 1
-#         L[j] = temp
-#     # print(np.angle(L))
-#     return L
-
-def tri(a) :
-    n = len(a)
-    for i in range(n) :
-        k = i
-        for j in range(i+1,n) :
-            if np.angle(a[k]) > np.angle(a[j]) :
-                k = j
-        a[k], a[i] = a[i], a[k]
-    return a
 
 
 
