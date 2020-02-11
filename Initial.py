@@ -23,5 +23,4 @@ from Affichage import * # pylint: disable=unused-wildcard-import
 # plt.plot(X, Y)
 # plt.show()
 
-rect = Rectangle()
-print(rect.coords)
+affichage(1)

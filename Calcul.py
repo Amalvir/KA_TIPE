@@ -26,8 +26,6 @@ class Rectangle:
 
         self.rac = np.array([[-l/2, 0],
                              [l/2, 0]])
-        self.X = list(self.aff[:,0]) + [self.aff[0,0]]
-        self.Z = list(self.aff[:,1]) + [self.aff[0,1]]
 
     def _rotation(self, teta):
         """Fais tourner rectangle d'un angle teta"""
@@ -90,17 +88,25 @@ class Rectangle:
             coords[i+j] = self.aff[i]
             coords[i+j+1] = self.rac[j]
         return coords
+    
+    @property
+    def X(self):
+        return list(self.aff[:,0]) + [self.aff[0,0]]
+    
+    @property
+    def Z(self):
+        return list(self.aff[:,1]) + [self.aff[0,1]]
 
 
-    # @property
-    # def pol_immerg(self):
-    #     shape = self.coords.shape
-    #     pol = np.zeros(shape)
-    #     for a in range(shape[1]):
-    #         if self.coords[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
-    #             pol[a,0] = self.coords[a,0]
-    #             pol[a,1] = self.coords[a,1]
-    #     return pol
+    @property
+    def pol_immerg(self):
+        shape = self.coords.shape
+        pol = np.zeros(shape)
+        for a in range(shape[1]):
+            if self.coords[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
+                pol[a,0] = self.coords[a,0]
+                pol[a,1] = self.coords[a,1]
+        return pol
     
     @property
     def aire_immerg(self):
