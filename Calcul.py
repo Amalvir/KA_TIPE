@@ -19,25 +19,15 @@ class Rectangle:
     """Notre objet rectangle"""
 
     def __init__(self):
-        self.coords = np.array([[l/2, -h],
-                                [l/2, h],
-                                [-l/2, h],
-                                [-l/2, -h],
-                                [-l/2, 0],
-                                [l/2, 0]])
-        self.masque_aff = np.array([[True, True],
-                                    [True, True],
-                                    [True, True],
-                                    [True, True],
-                                    [False, False],
-                                    [False, False]])
-        self.aff = self.coords[self.masque_aff]
-        self.aff.shape = (4, 2)
-        self.rac = self.coords[~self.masque_aff]
-        self.rac.shape = (2, 2)
+        self.aff = np.array([[l/2, h],
+                            [-l/2, h],
+                            [-l/2, -h],
+                            [l/2, -h]])
+
+        self.rac = np.array([[-l/2, 0],
+                             [l/2, 0]])
         self.X = list(self.aff[:,0]) + [self.aff[0,0]]
         self.Z = list(self.aff[:,1]) + [self.aff[0,1]]
-        print(self.X, self.Z)
 
     def _rotation(self, teta):
         """Fais tourner rectangle d'un angle teta"""
@@ -70,31 +60,47 @@ class Rectangle:
             if Y[j]*Y[j+1] < 0:
                 if X[j+1] - X[j] == 0:
                     self.rac = [[-l/2, 0], [l/2, 0]]
-                else:
 
-                    # On test si les coordonnées Y sont 2 à 2 de même signes
-                    # Calcul du coeff directeur de la droite
-                    coeff = (Y[j+1] - Y[j])/(X[j+1] - X[j])
+                # On test si les coordonnées Y sont 2 à 2 de même signes
+                # Calcul du coeff directeur de la droite
+                coeff = (Y[j+1] - Y[j])/(X[j+1] - X[j])
 
-                    # Système d'équations : (inconnues : x, b)
-                    # coeff*x + b = 0
-                    # 0*x + b = Y[j] - coeff*X[j]
-                    A = np.array([[coeff, 1], [0, 1]])      # Matrices des variables
-                    B = np.array([0, Y[j] - coeff*X[j]])    # Matrices des constantes
-                    S = np.linalg.solve(A, B)   # Pivot de Gauss
-                    self.rac[i] = [S[0], 0]    # On a besoin que de x donc on append que S[0]
-                    i += 1
-
+                # Système d'équations : (inconnues : x, b)
+                # coeff*x + b = 0
+                # 0*x + b = Y[j] - coeff*X[j]
+                A = np.array([[coeff, 1], [0, 1]])      # Matrices des variables
+                B = np.array([0, Y[j] - coeff*X[j]])    # Matrices des constantes
+                S = np.linalg.solve(A, B)   # Pivot de Gauss
+                self.rac[i] = [S[0], 0]    # On a besoin que de x donc on append que S[0]
+                # Trouver une idée pour trier comm il faut
+                i += 1
 
     @property
-    def pol_immerg(self):
-        shape = self.coords.shape
-        pol = np.zeros(shape)
-        for a in range(shape[1]):
-            if self.coords[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
-                pol[a,0] = self.coords[a,0]
-                pol[a,1] = self.coords[a,1]
-        return pol
+    def coords(self):
+        coords = np.zeros((6,2))
+        j = 0
+        i = 0
+        while i < 3:
+            coords[i+j] = self.aff[i]
+            if self.aff[i,1]*self.aff[i+1,1] < 0:
+                coords[i+j+1] = self.rac[j]
+                j += 1
+            i += 1
+        if j == 1:
+            coords[i+j] = self.aff[i]
+            coords[i+j+1] = self.rac[j]
+        return coords
+
+
+    # @property
+    # def pol_immerg(self):
+    #     shape = self.coords.shape
+    #     pol = np.zeros(shape)
+    #     for a in range(shape[1]):
+    #         if self.coords[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
+    #             pol[a,0] = self.coords[a,0]
+    #             pol[a,1] = self.coords[a,1]
+    #     return pol
     
     @property
     def aire_immerg(self):
