@@ -62,7 +62,6 @@ def anim(teta, fig, ax):
         Xbb, Zbb = center_of_buoyancy(Xb, Zb, agl)  # Centre de buyocency
         X, Z = reel(rotation(agl, True))
         rect.set_data(X, Z)
-        print(root)
         plot1.set_data(root[0], [0])
         plot2.set_data(root[1], [0])
         buoyency.set_data(Xbb, Zbb)
@@ -79,13 +78,13 @@ def non_anim(teta):
     rect = Rectangle()
     init(rect)
     rect._rotation(teta)
+    rect._translation()
     X, Z = rect.X, rect.Z
     plt.plot(X, Z)
     xg, zg = center_of_mass(X, Z)   # Point G
     plt.plot(xg, zg, 'o', color='red')
-    # root = racines(teta)
-    # X.extend(root)
-    # Z.extend([0]*len(root))
+    root = rect.rac
+    plt.plot(root[:,0], root[:,1], 'o', color="yellow")
     Xg, Zg = center_of_mass(rect.pol_immerg[:,0], rect.pol_immerg[:,1])
     plt.plot([Xg], [Zg], 'o', color='green')   # Le centre de gravité des points immergé
     points(rect)

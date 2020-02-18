@@ -23,4 +23,4 @@ from Affichage import * # pylint: disable=unused-wildcard-import
 # plt.plot(X, Y)
 # plt.show()
 
-affichage(1)
+affichage(0)

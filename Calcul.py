@@ -29,24 +29,32 @@ class Rectangle:
 
     def _rotation(self, teta):
         """Fais tourner rectangle d'un angle teta"""
+        teta = -teta
         Rot = np.array([[np.cos(teta), -np.sin(teta)],
                         [np.sin(teta), np.cos(teta)]])
         for i in range(self.aff.shape[0]):
             self.aff[i] = np.dot(self.aff[i], Rot)
+        self._set_racines()
 
     def __f(self, x):
-        return A - self.aire_immerg
+        self.aff[:,1] += x
+        self._set_racines()
+        y = A - self.aire_immerg
+        self.aff[:,1] -= x
+        self._set_racines()
+        return y
     
     def _translation(self):
         """Ajuste la hauteur du rectangle pour répondre aux conditions d'Archimède"""
         a, b = -l/2, l/2
         while b-a > 1:
             c = (a+b)/2
+            print(self.__f(a)*self.__f(c))
             if self.__f(a)*self.__f(c) <= 0:
                 b = c
             else:
                 a = c
-        self.aff += c
+        self.aff[:,1] += c
     
     def _set_racines(self):
         """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
@@ -57,7 +65,7 @@ class Rectangle:
         for j in range(len(Y) - 1):
             if Y[j]*Y[j+1] < 0:
                 if X[j+1] - X[j] == 0:
-                    self.rac = [[-l/2, 0], [l/2, 0]]
+                    self.rac = np.array([[-l/2, 0], [l/2, 0]])
 
                 # On test si les coordonnées Y sont 2 à 2 de même signes
                 # Calcul du coeff directeur de la droite
@@ -72,22 +80,27 @@ class Rectangle:
                 self.rac[i] = [S[0], 0]    # On a besoin que de x donc on append que S[0]
                 # Trouver une idée pour trier comm il faut
                 i += 1
+        if i == 0:
+            self.rac = None
 
     @property
     def coords(self):
-        coords = np.zeros((6,2))
-        j = 0
-        i = 0
-        while i < 3:
-            coords[i+j] = self.aff[i]
-            if self.aff[i,1]*self.aff[i+1,1] < 0:
+        if type(self.rac) == type(None):
+            return self.aff
+        else:
+            coords = np.zeros((6,2))
+            j = 0
+            i = 0
+            while i < 3:
+                coords[i+j] = self.aff[i]
+                if self.aff[i,1]*self.aff[i+1,1] < 0:
+                    coords[i+j+1] = self.rac[j]
+                    j += 1
+                i += 1
+            if j == 1:
+                coords[i+j] = self.aff[i]
                 coords[i+j+1] = self.rac[j]
-                j += 1
-            i += 1
-        if j == 1:
-            coords[i+j] = self.aff[i]
-            coords[i+j+1] = self.rac[j]
-        return coords
+            return coords
     
     @property
     def X(self):
@@ -100,13 +113,12 @@ class Rectangle:
 
     @property
     def pol_immerg(self):
-        shape = self.coords.shape
-        pol = np.zeros(shape)
-        for a in range(shape[1]):
+        longueur = self.coords.shape[0]
+        pol = []
+        for a in range(longueur):
             if self.coords[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
-                pol[a,0] = self.coords[a,0]
-                pol[a,1] = self.coords[a,1]
-        return pol
+                pol.append(self.coords[a])
+        return np.array(pol)
     
     @property
     def aire_immerg(self):
