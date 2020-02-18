@@ -113,6 +113,8 @@ class Rectangle:
 
     @property
     def pol_immerg(self):
+        if type(self.rac) == type(None):
+            return None
         longueur = self.coords.shape[0]
         pol = []
         for a in range(longueur):
@@ -122,6 +124,8 @@ class Rectangle:
     
     @property
     def aire_immerg(self):
+        if type(self.rac) == type(None):
+            return 0
         return aire(self.pol_immerg)
 
 
