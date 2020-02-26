@@ -3,8 +3,8 @@
 from Affichage import * # pylint: disable=unused-wildcard-import
 
 
-# affichage(np.linspace(np.pi/40, np.pi, 500))
-# affichage(0)
+affichage(np.linspace(np.pi/40, np.pi, 5000))
+# affichage(1)
 # teta = np.pi/40
 # a = h/2
 
@@ -23,4 +23,9 @@ from Affichage import * # pylint: disable=unused-wildcard-import
 # plt.plot(X, Y)
 # plt.show()
 
-affichage(0)
+# rect = Rectangle()
+# X = np.linspace(-17, 17, 34)
+# Y = [rect.f(x) for x in X]
+
+# plt.plot(X, Y)
+# plt.show()

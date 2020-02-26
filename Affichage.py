@@ -7,13 +7,17 @@ from Calcul import *    # pylint: disable=unused-wildcard-import
 
 def init(rect):
     """Plot les conditions initiales"""
-
+    rect.rot(0)
     X, Z = rect.X, rect.Z
     EAU = [-2*l, 2*l]
     NIV_EAU = [0, 0]
+    xg, zg = rect.center_of_mass
+    xb, zb = rect.center_of_buoyancy
 
-    plt.plot([0], [(Z[1] + Z[2])/2], 'o', color='red', label='G')
-    plt.plot([0], [Z[3]/2], 'o', color='green', label='C')
+    plt.plot([xg], [zg], 'o', color='red', label='G')
+    plt.annotate('G', (xg, zg))
+    plt.plot([xb], [zb], 'o', color='green', label='C')
+    plt.annotate('C', (xb, zb))
     plt.plot([0], [0], 'o', color='gray', label='O')
     plt.plot(X, Z)
     plt.plot(EAU, NIV_EAU, label='eau')
@@ -33,59 +37,55 @@ def affichage(teta):
     "rectangleée l'animation si terectanglest une rectanglee. Crée le rectangle si c'est juste un angle"""
     fig, ax = plt.subplots(1, figsize=[7, 7])
     ax.axis([-20, 20, -20, 20])
+    rect = Rectangle()
     if isinstance(teta, list) or isinstance(teta, np.ndarray):
-        anim(teta, fig, ax)
+        anim(teta, rect, fig, ax)
     else:
-        non_anim(teta)
+        non_anim(rect, teta)
         plt.legend()
     plt.show()
 
 
-def anim(teta, fig, ax):
+def anim(teta, rectangle, fig, ax):
     """Fonction qui génère l'animation"""
-    X, Z = reel(rotation(0, affichage=True))
+    X, Z = rectangle.X, rectangle.Z
     rect = ax.plot(X, Z)[0]
-    plot1 = ax.plot([], [], 'o', color="orange")[0]
-    plot2 = ax.plot([], [], 'o', color="orange")[0]
+    plot1 = ax.plot([-l/2, l/2], [0, 0], 'o', color="orange")[0]
+    # plot2 = ax.plot([], [], 'o', color="orange")[0]
     buoyency = ax.plot([], [], 'o-', color="green")[0]
     grav = ax.plot([], [], 'o', color="red")[0]
-    init()
+    init(rectangle)
 
     def animate(agl):
-        root = racines(agl)
-        Rot = rotation(agl, affichage=False)
+        rectangle.rot(agl)
+        root = rectangle.rac
+        X, Z = rectangle.X, rectangle.Z
         
-        X, Z = reel(tri(Rot))   # On convertie et on trie les points
-        xg, zg = center_of_mass(X, Z)   # Point G
-        X, Z = reel(tri(Rot + root))
-        Xb, Zb = immerg((X, Z), agl)   # Point immergé
-        Xbb, Zbb = center_of_buoyancy(Xb, Zb, agl)  # Centre de buyocency
-        X, Z = reel(rotation(agl, True))
+        xg, zg = rectangle.center_of_mass   # Point G
+        Xbb, Zbb = rectangle.center_of_buoyancy  # Centre de buoyency
         rect.set_data(X, Z)
-        plot1.set_data(root[0], [0])
-        plot2.set_data(root[1], [0])
+        plot1.set_data(root[:,0], root[:,1])
+        # plot2.set_data(root[1], [0])
         buoyency.set_data(Xbb, Zbb)
         grav.set_data(xg, zg)
-        return rect, plot1, plot2, buoyency, grav
+        return rect, plot1, buoyency, grav
 
-    ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=15)
+    ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=150)
     # ani.save("animation.mp4")
     plt.show()
 
 
-def non_anim(teta):
+def non_anim(rect, teta):
     """Fonction qui génère la rotation"""
-    rect = Rectangle()
     init(rect)
-    rect._rotation(teta)
-    rect._translation()
+    rect.rot(teta)
     X, Z = rect.X, rect.Z
     plt.plot(X, Z)
-    xg, zg = center_of_mass(X, Z)   # Point G
+    xg, zg = rect.center_of_mass   # Point G
     plt.plot(xg, zg, 'o', color='red')
     root = rect.rac
     plt.plot(root[:,0], root[:,1], 'o', color="yellow")
-    Xg, Zg = center_of_mass(rect.pol_immerg[:,0], rect.pol_immerg[:,1])
+    Xg, Zg = rect.center_of_buoyancy
     plt.plot([Xg], [Zg], 'o', color='green')   # Le centre de gravité des points immergé
     points(rect)
     # for j in root:

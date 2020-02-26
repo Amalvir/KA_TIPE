@@ -39,7 +39,7 @@ class Rectangle:
     def __f(self, x):
         self.aff[:,1] += x
         self._set_racines()
-        y = A - self.aire_immerg
+        y = self.aire_immerg - A
         self.aff[:,1] -= x
         self._set_racines()
         return y
@@ -47,25 +47,28 @@ class Rectangle:
     def _translation(self):
         """Ajuste la hauteur du rectangle pour répondre aux conditions d'Archimède"""
         a, b = -l/2, l/2
-        while b-a > 1:
+        while abs(b-a) > 0.1:
             c = (a+b)/2
-            print(self.__f(a)*self.__f(c))
             if self.__f(a)*self.__f(c) <= 0:
                 b = c
             else:
                 a = c
         self.aff[:,1] += c
+        self._set_racines()
     
     def _set_racines(self):
         """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
         # On récupère les coordonnés des points
         X, Y = self.aff[:,0], self.aff[:,1]
         i = 0
+        self.rac = np.array([[-l/2, 0],
+                             [l/2, 0]])
 
         for j in range(len(Y) - 1):
             if Y[j]*Y[j+1] < 0:
                 if X[j+1] - X[j] == 0:
                     self.rac = np.array([[-l/2, 0], [l/2, 0]])
+                    return None
 
                 # On test si les coordonnées Y sont 2 à 2 de même signes
                 # Calcul du coeff directeur de la droite
@@ -82,6 +85,10 @@ class Rectangle:
                 i += 1
         if i == 0:
             self.rac = None
+
+    def rot(self, teta):
+        self._rotation(teta)
+        self._translation()
 
     @property
     def coords(self):
@@ -113,8 +120,6 @@ class Rectangle:
 
     @property
     def pol_immerg(self):
-        if type(self.rac) == type(None):
-            return None
         longueur = self.coords.shape[0]
         pol = []
         for a in range(longueur):
@@ -124,9 +129,25 @@ class Rectangle:
     
     @property
     def aire_immerg(self):
-        if type(self.rac) == type(None):
+        pol = self.pol_immerg
+        if pol.shape == (0,):
             return 0
-        return aire(self.pol_immerg)
+        else:
+            return aire(self.pol_immerg)
+    
+    @property
+    def center_of_mass(self):
+        X = self.aff[:,0]
+        Z = self.aff[:,1]
+        return sum(X)/len(X), sum(Z)/len(Z)
+    
+    @property
+    def center_of_buoyancy(self):
+        if self.pol_immerg.shape == (0,):
+            return 0, 0
+        X = self.pol_immerg[:,0]
+        Z = self.pol_immerg[:,1]
+        return sum(X)/len(X), sum(Z)/len(Z)
 
 
 def aire(pol):
@@ -135,8 +156,9 @@ def aire(pol):
     s = 0
     for k in range(len(X)-1):
         s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
-        # On doit trouver 323
     return 1/2*s
+
+
 def f(x):
     pol = immerg()
     aire_im = aire(pol)
