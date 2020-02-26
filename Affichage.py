@@ -50,8 +50,7 @@ def anim(teta, rectangle, fig, ax):
     """Fonction qui génère l'animation"""
     X, Z = rectangle.X, rectangle.Z
     rect = ax.plot(X, Z)[0]
-    plot1 = ax.plot([-l/2, l/2], [0, 0], 'o', color="orange")[0]
-    # plot2 = ax.plot([], [], 'o', color="orange")[0]
+    racines = ax.plot([-l/2, l/2], [0, 0], 'o', color="orange")[0]
     buoyency = ax.plot([], [], 'o-', color="green")[0]
     grav = ax.plot([], [], 'o', color="red")[0]
     init(rectangle)
@@ -64,13 +63,13 @@ def anim(teta, rectangle, fig, ax):
         xg, zg = rectangle.center_of_mass   # Point G
         Xbb, Zbb = rectangle.center_of_buoyancy  # Centre de buoyency
         rect.set_data(X, Z)
-        plot1.set_data(root[:,0], root[:,1])
+        racines.set_data(root[:,0], root[:,1])
         # plot2.set_data(root[1], [0])
         buoyency.set_data(Xbb, Zbb)
         grav.set_data(xg, zg)
-        return rect, plot1, buoyency, grav
+        return rect, racines, buoyency, grav
 
-    ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=150)
+    ani = animation.FuncAnimation(fig, animate, frames=teta, blit=True, interval=15)
     # ani.save("animation.mp4")
     plt.show()
 

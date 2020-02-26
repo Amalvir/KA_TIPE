@@ -87,6 +87,7 @@ class Rectangle:
             self.rac = None
 
     def rot(self, teta):
+        self.__init__()
         self._rotation(teta)
         self._translation()
 
