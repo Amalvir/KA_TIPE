@@ -59,30 +59,30 @@ class Rectangle:
     def _set_racines(self):
         """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
         # On récupère les coordonnés des points
-        X, Y = self.aff[:,0], self.aff[:,1]
+        X, Z = self.X, self.Z
         i = 0
         self.rac = np.array([[-l/2, 0],
                              [l/2, 0]])
 
-        for j in range(len(Y) - 1):
-            if Y[j]*Y[j+1] < 0:
-                if X[j+1] - X[j] == 0:
-                    self.rac = np.array([[-l/2, 0], [l/2, 0]])
-                    return None
+        for j in range(len(Z) - 1):
+            if Z[j]*Z[j+1] < 0:
+                if X[j+1] == X[j]:
+                    self.rac[i] = [X[j], 0]
+                    i += 1
+                else:
+                    # On test si les coordonnées Y sont 2 à 2 de même signes
+                    # Calcul du coeff directeur de la droite
+                    coeff = (Z[j+1] - Z[j])/(X[j+1] - X[j])
 
-                # On test si les coordonnées Y sont 2 à 2 de même signes
-                # Calcul du coeff directeur de la droite
-                coeff = (Y[j+1] - Y[j])/(X[j+1] - X[j])
-
-                # Système d'équations : (inconnues : x, b)
-                # coeff*x + b = 0
-                # 0*x + b = Y[j] - coeff*X[j]
-                A = np.array([[coeff, 1], [0, 1]])      # Matrices des variables
-                B = np.array([0, Y[j] - coeff*X[j]])    # Matrices des constantes
-                S = np.linalg.solve(A, B)   # Pivot de Gauss
-                self.rac[i] = [S[0], 0]    # On a besoin que de x donc on append que S[0]
-                # Trouver une idée pour trier comm il faut
-                i += 1
+                    # Système d'équations : (inconnues : x, b)
+                    # coeff*x + b = 0
+                    # 0*x + b = Y[j] - coeff*X[j]
+                    A = np.array([[coeff, 1], [0, 1]])      # Matrices des variables
+                    B = np.array([0, Z[j] - coeff*X[j]])    # Matrices des constantes
+                    S = np.linalg.solve(A, B)   # Pivot de Gauss
+                    self.rac[i] = [S[0], 0]    # On a besoin que de x donc on append que S[0]
+                    # Trouver une idée pour trier comm il faut
+                    i += 1
         if i == 0:
             self.rac = None
 
