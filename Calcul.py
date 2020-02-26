@@ -145,9 +145,18 @@ class Rectangle:
     def center_of_buoyancy(self):
         if self.pol_immerg.shape == (0,):
             return 0, 0
-        X = self.pol_immerg[:,0]
-        Z = self.pol_immerg[:,1]
-        return sum(X)/len(X), sum(Z)/len(Z)
+        X = list(self.pol_immerg[:,0])
+        Z = list(self.pol_immerg[:,1])
+        X += X[:1]
+        Z += Z[:1]
+        s = 0
+        t = 0
+        for k in range(0, len(X)-1):
+            s += (X[k] + X[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
+            t += (Z[k] + Z[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
+        return 1/(6*self.aire_immerg)*s, 1/(6*self.aire_immerg)*t
+
+
 
 
 def aire(pol):
@@ -157,96 +166,6 @@ def aire(pol):
     for k in range(len(X)-1):
         s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
     return 1/2*s
-
-
-def f(x):
-    pol = immerg()
-    aire_im = aire(pol)
-    return A - aire_im
-
-def translation():
-    """Ajuste la hauteur du rectangle pour répondre aux conditions d'Archimède"""
-    a, b = -l/2, l/2
-    while b-a > 1:
-        c = (a+b)/2
-        if f(a)*f(c) <= 0:
-            b = c
-        else:
-            a = c
-    global rectangle
-    rectangle += a
-
-
-
-
-
-
-
-
-
-def reel(L):
-    """D'une liste de complexe, renvoie les coords X et Y"""
-    X = []
-    Y = []
-    for k in L:
-        X.append(k.real)
-        Y.append(k.imag)
-    return (X, Y)
-
-def racines(teta):
-    """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
-
-    sol = []
-    # On récupère les coordonnés des points
-    X, Y = rectangle[:,0], rectangle[:,1]
-
-    for j in range(len(Y) - 1):
-        if Y[j]*Y[j+1] < 0:
-            if X[j+1] - X[j] == 0:
-                return [l/2, -l/2]
-
-            # On test si les coordonnées Y sont 2 à 2 de même signes
-            # Calcul du coeff directeur de la droite
-            coeff = (Y[j+1] - Y[j])/(X[j+1] - X[j])
-
-            # Système d'équations : (inconnues : x, b)
-            # coeff*x + b = 0
-            # 0*x + b = Y[j] - coeff*X[j]
-            A = np.array([[coeff, 1], [0, 1]])      # Matrices des variables
-            B = np.array([0, Y[j] - coeff*X[j]])    # Matrices des constantes
-            S = np.linalg.solve(A, B)   # Pivot de Gauss
-            sol.append(S[0])    # On a besoin que de x donc on append que S[0]
-    return sol
-
-
-# def immerg():
-#     """D'une liste de points, renvoie ceux qui sont immergés avec le centre de gravité en premier"""
-#     shape = rectangle.shape
-#     pol = np.zeros(shape)
-#     for a in range(shape[1]):
-#         if rectangle[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
-#             pol[a,0] = rectangle[a,0]
-#             pol[a,0] = rectangle[a,0]
-#     # x1, z1 = center_of_buoyancy(X1, Z1, teta)
-#     # X1.insert(0, x1)
-#     # Z1.insert(0, z1)
-#     # print('X1', X1, 'Z1', Z1, '\n')
-#     return pol
-
-def emerg(X, Z):
-    """D'une liste de points, renvoie ceux qui sont émergés."""
-    Z1 = []
-    X1 = []
-    for a in range(len(Z)):
-        if Z[a] >= -1e-2:  # On est en python alors on prend une petite valeur plutôt que 0
-            Z1.append(Z[a])
-            X1.append(X[a])
-    return X1, Z1
-
-
-def center_of_mass(X, Z):
-    """Renvoie les coords du centre de gravité"""
-    return sum(X)/len(X), sum(Z)/len(Z)
 
 
 def center_of_buoyancy(X, Z, teta):
