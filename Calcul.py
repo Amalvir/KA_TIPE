@@ -57,7 +57,8 @@ class Rectangle:
         self._set_racines()
     
     def _set_racines(self):
-        """Renvoie les coords en x des points de contacts avec l'eau en fonction de teta"""
+        """Met dans l'attribut rac les coordonnées des points de coupure avec l'eau.
+        None si solide complètement émergé."""
         # On récupère les coordonnés des points
         X, Z = self.X, self.Z
         i = 0
@@ -87,12 +88,15 @@ class Rectangle:
             self.rac = None
 
     def rot(self, teta):
+        """Méthode à utiliser pour effectuer une rotation du rectangle."""
         self.__init__()
         self._rotation(teta)
         self._translation()
 
     @property
     def coords(self):
+        """Renvoie un array avec les coordonnées de chaque point du rectangle triées dans le 
+        sens antihoraire"""
         if type(self.rac) == type(None):
             return self.aff
         else:
@@ -112,15 +116,18 @@ class Rectangle:
     
     @property
     def X(self):
+        """Renvoie une liste des abscisses pour afficher le rectangle"""
         return list(self.aff[:,0]) + [self.aff[0,0]]
     
     @property
     def Z(self):
+        """Renvoie une liste des ordonnées pour afficher le rectangle"""
         return list(self.aff[:,1]) + [self.aff[0,1]]
 
 
     @property
     def pol_immerg(self):
+        """Renvoie un array avec les coordonnées des points immergés"""
         longueur = self.coords.shape[0]
         pol = []
         for a in range(longueur):
@@ -130,6 +137,7 @@ class Rectangle:
     
     @property
     def aire_immerg(self):
+        """Renvoie l'aire de la surface immergée"""
         pol = self.pol_immerg
         if pol.shape == (0,):
             return 0
@@ -138,12 +146,14 @@ class Rectangle:
     
     @property
     def center_of_mass(self):
+        """Renvoie un tuple qui correspond au centre de gravité du rectangle"""
         X = self.aff[:,0]
         Z = self.aff[:,1]
         return sum(X)/len(X), sum(Z)/len(Z)
     
     @property
     def center_of_buoyancy(self):
+        """Renvoie un tuple qui correspond au centre de buoyancy du rectangle"""
         if self.pol_immerg.shape == (0,):
             return 0, 0
         X = list(self.pol_immerg[:,0])
@@ -168,18 +178,6 @@ def aire(pol):
         s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
     return 1/2*s
 
-
-def center_of_buoyancy(X, Z, teta):
-    """Renvoie les coords du centre de buoyency"""
-    X += X[:1]
-    Z += Z[:1]
-    s = 0
-    t = 0
-    for k in range(0, len(X)-1):
-        s += (X[k] + X[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
-        t += (Z[k] + Z[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
-    # return 1/(6*aire_immerg(teta))*s, 1/(6*aire_immerg(teta))*t
-    return 1/(6*A)*s, 1/(6*A)*t
 
 def distance_entreGC(teta,quoi=None):
     """renvoie la distance entre le centre de poussé et le centre de gravité"""
