@@ -6,7 +6,7 @@ from Calcul import *    # pylint: disable=unused-wildcard-import
 
 
 def init(rect):
-    """Plot les conditions initiales"""
+    """Met en place la position initiale du rectangle"""
     rect.rot(0)
     X, Z = rect.X, rect.Z
     EAU = [-2*l, 2*l]
@@ -25,7 +25,7 @@ def init(rect):
 
 
 def points(rect):
-    """Affiche les points ABCD ainsi que leurs noms en foncrectangle de teta"""
+    """Affiche les points ABCD ainsi que leurs noms de l'objet Rectangle"""
     X, Z = rect.X, rect.Z
     P = ['C', 'D', 'A', 'B']
     for j in range(len(P)):
@@ -34,7 +34,7 @@ def points(rect):
 
 
 def affichage(teta):
-    "rectangleée l'animation si terectanglest une rectanglee. Crée le rectangle si c'est juste un angle"""
+    """Affiche une animation si teta est une liste et une image si teta est un nombre."""
     fig, ax = plt.subplots(1, figsize=[7, 7])
     ax.axis([-20, 20, -20, 20])
     rect = Rectangle()
@@ -59,12 +59,10 @@ def anim(teta, rectangle, fig, ax):
         rectangle.rot(agl)
         root = rectangle.rac
         X, Z = rectangle.X, rectangle.Z
-        
         xg, zg = rectangle.center_of_mass   # Point G
         Xbb, Zbb = rectangle.center_of_buoyancy  # Centre de buoyency
         rect.set_data(X, Z)
         racines.set_data(root[:,0], root[:,1])
-        # plot2.set_data(root[1], [0])
         buoyency.set_data(Xbb, Zbb)
         grav.set_data(xg, zg)
         return rect, racines, buoyency, grav
@@ -75,7 +73,7 @@ def anim(teta, rectangle, fig, ax):
 
 
 def non_anim(rect, teta):
-    """Fonction qui génère la rotation"""
+    """Fonction qui affiche une image du rectange pivoté de teta"""
     init(rect)
     rect.rot(teta)
     X, Z = rect.X, rect.Z
@@ -87,8 +85,6 @@ def non_anim(rect, teta):
     Xg, Zg = rect.center_of_buoyancy
     plt.plot([Xg], [Zg], 'o', color='green')   # Le centre de gravité des points immergé
     points(rect)
-    # for j in root:
-    #     plt.plot(j, [0], 'o', color="orange")
 
 
 def courbe_de_stabilite_statique():

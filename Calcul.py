@@ -13,16 +13,18 @@ robj = 0.7*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = b*h**3/12   # I est le moment quadratique du pavé
-A = h*l*robj/rofl 
+A = h*l*robj/rofl # Aire immergée
+
+## Définition de la classe Rectangle
 
 class Rectangle:
     """Notre objet rectangle"""
 
     def __init__(self):
-        self.aff = np.array([[l/2, h],
-                            [-l/2, h],
-                            [-l/2, -h],
-                            [l/2, -h]])
+        self.aff = np.array([[l/2, h/2],
+                            [-l/2, h/2],
+                            [-l/2, -h/2],
+                            [l/2, -h/2]])
 
         self.rac = np.array([[-l/2, 0],
                              [l/2, 0]])
@@ -36,7 +38,7 @@ class Rectangle:
             self.aff[i] = np.dot(self.aff[i], Rot)
         self._set_racines()
 
-    def f(self, x):
+    def __f(self, x):
         self.aff[:,1] += x
         self._set_racines()
         y = self.aire_immerg - A
@@ -47,7 +49,7 @@ class Rectangle:
     def _translation(self):
         """Ajuste la hauteur du rectangle pour répondre aux conditions d'Archimède"""
         a, b = -l/2, l/2
-        while abs(b-a) > 0.1:
+        while abs(b-a) > 0.01:
             c = (a+b)/2
             if self.__f(a)*self.__f(c) <= 0:
                 b = c
@@ -128,11 +130,12 @@ class Rectangle:
     @property
     def pol_immerg(self):
         """Renvoie un array avec les coordonnées des points immergés"""
-        longueur = self.coords.shape[0]
+        coords = self.coords
+        longueur = coords.shape[0]
         pol = []
         for a in range(longueur):
-            if self.coords[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
-                pol.append(self.coords[a])
+            if coords[a,1] <= 1e-5:    # On est en python alors on prend une petite valeur plutôt que 0
+                pol.append(coords[a])
         return np.array(pol)
     
     @property
@@ -154,10 +157,12 @@ class Rectangle:
     @property
     def center_of_buoyancy(self):
         """Renvoie un tuple qui correspond au centre de buoyancy du rectangle"""
-        if self.pol_immerg.shape == (0,):
+        immerg = self.pol_immerg
+        aire = self.aire_immerg
+        if immerg.shape == (0,):
             return 0, 0
-        X = list(self.pol_immerg[:,0])
-        Z = list(self.pol_immerg[:,1])
+        X = list(immerg[:,0])
+        Z = list(immerg[:,1])
         X += X[:1]
         Z += Z[:1]
         s = 0
@@ -165,19 +170,22 @@ class Rectangle:
         for k in range(0, len(X)-1):
             s += (X[k] + X[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
             t += (Z[k] + Z[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
-        return 1/(6*self.aire_immerg)*s, 1/(6*self.aire_immerg)*t
+        return 1/(6*aire)*s, 1/(6*aire)*t
 
-
-
+## Fonction utile à la calsse Rectangle
 
 def aire(pol):
     """Calcul l'aire d'un polynome quelconque dont les points sont triés par arguments"""
-    X, Y = pol[:,0], pol[:,1]
+    X = list(pol[:,0])
+    Z = list(pol[:,1])
+    X += X[:1]
+    Z += Z[:1]
     s = 0
     for k in range(len(X)-1):
-        s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
+        s += X[k]*Z[k+1] - X[k+1]*Z[k]
     return 1/2*s
 
+## Fonction d'exploitation
 
 def distance_entreGC(teta,quoi=None):
     """renvoie la distance entre le centre de poussé et le centre de gravité"""
