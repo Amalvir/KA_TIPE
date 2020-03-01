@@ -36,7 +36,7 @@ class Rectangle:
             self.aff[i] = np.dot(self.aff[i], Rot)
         self._set_racines()
 
-    def __f(self, x):
+    def f(self, x):
         self.aff[:,1] += x
         self._set_racines()
         y = self.aire_immerg - A
@@ -101,16 +101,16 @@ class Rectangle:
             return self.aff
         else:
             coords = np.zeros((6,2))
-            j = 0
             i = 0
+            j = 0
             while i < 3:
                 coords[i+j] = self.aff[i]
                 if self.aff[i,1]*self.aff[i+1,1] < 0:
                     coords[i+j+1] = self.rac[j]
                     j += 1
                 i += 1
+            coords[i+j] = self.aff[i]
             if j == 1:
-                coords[i+j] = self.aff[i]
                 coords[i+j+1] = self.rac[j]
             return coords
     
@@ -142,7 +142,7 @@ class Rectangle:
         if pol.shape == (0,):
             return 0
         else:
-            return aire(self.pol_immerg)
+            return aire(pol)
     
     @property
     def center_of_mass(self):
