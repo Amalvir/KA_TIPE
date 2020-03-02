@@ -21,59 +21,63 @@ class Rectangle:
     """Notre objet rectangle"""
 
     def __init__(self):
-        self.aff = np.array([[l/2, h/2],
+        """Ici c'est les 'conditions inistiales'"""
+        self.aff = np.array([[l/2, h/2],    # Le rectangle
                             [-l/2, h/2],
                             [-l/2, -h/2],
                             [l/2, -h/2]])
 
-        self.rac = np.array([[-l/2, 0],
+        self.rac = np.array([[-l/2, 0],     # Les racines
                              [l/2, 0]])
 
     def _rotation(self, teta):
-        """Fais tourner rectangle d'un angle teta"""
-        teta = -teta
-        Rot = np.array([[np.cos(teta), -np.sin(teta)],
+        """Ne pas utiliser. Fais tourner rectangle d'un angle teta."""
+        teta = -teta    # Inversion de l'angle sinon ça tourne dans le mauvais sens (je sais pas pk)
+        Rot = np.array([[np.cos(teta), -np.sin(teta)],  # Matrice de rotation 2x2
                         [np.sin(teta), np.cos(teta)]])
         for i in range(self.aff.shape[0]):
-            self.aff[i] = np.dot(self.aff[i], Rot)
-        self._set_racines()
+            self.aff[i] = np.dot(self.aff[i], Rot)  # Application de la matrice de rotation à chaque points
+        self._set_racines()     # Redéfinition des racines après la racines
 
     def __f(self, x):
-        self.aff[:,1] += x
-        self._set_racines()
+        """Ne pas utiliser. Sert à la dichotomie de _translation. Permet de trouver x tel que
+        si on translate le rectangle de x, l'aire immergée = A"""
+        self.aff[:,1] += x  # Translation de x
+        self._set_racines() # Redéfinition des racines
         y = self.aire_immerg - A
-        self.aff[:,1] -= x
-        self._set_racines()
+        self.aff[:,1] -= x  # Retour à la position précédente
+        self._set_racines() # Redéfinition des racines
         return y
     
     def _translation(self):
-        """Ajuste la hauteur du rectangle pour répondre aux conditions d'Archimède"""
+        """Ne pas utiliser. Ajuste la hauteur du rectangle pour que aire immérgée = A"""
         a, b = -l/2, l/2
+        # Dichotomie on cherche le 0 de la fonction __f
         while abs(b-a) > 0.01:
             c = (a+b)/2
             if self.__f(a)*self.__f(c) <= 0:
                 b = c
             else:
                 a = c
-        self.aff[:,1] += c
-        self._set_racines()
+        self.aff[:,1] += c  # Tranlation
+        self._set_racines() # Définition des racines
     
     def _set_racines(self):
-        """Met dans l'attribut rac les coordonnées des points de coupure avec l'eau.
+        """Ne pas utiliser. Met dans l'attribut rac les coordonnées des points de coupure avec l'eau.
         None si solide complètement émergé."""
         # On récupère les coordonnés des points
         X, Z = self.X, self.Z
         i = 0
-        self.rac = np.array([[-l/2, 0],
-                             [l/2, 0]])
+        if self.rac == None:    # Sinon erreur lors de l'assignation plus tard
+            self.rac = np.array([[-l/2, 0],
+                                [l/2, 0]])
 
         for j in range(len(Z) - 1):
-            if Z[j]*Z[j+1] < 0:
-                if X[j+1] == X[j]:
+            if Z[j]*Z[j+1] < 0: # On test si les coordonnées Z sont 2 à 2 de même signes
+                if X[j+1] == X[j]:  # Si les points sont alignés verticalement
                     self.rac[i] = [X[j], 0]
                     i += 1
                 else:
-                    # On test si les coordonnées Y sont 2 à 2 de même signes
                     # Calcul du coeff directeur de la droite
                     coeff = (Z[j+1] - Z[j])/(X[j+1] - X[j])
 
@@ -83,14 +87,13 @@ class Rectangle:
                     A = np.array([[coeff, 1], [0, 1]])      # Matrices des variables
                     B = np.array([0, Z[j] - coeff*X[j]])    # Matrices des constantes
                     S = np.linalg.solve(A, B)   # Pivot de Gauss
-                    self.rac[i] = [S[0], 0]    # On a besoin que de x donc on append que S[0]
-                    # Trouver une idée pour trier comm il faut
+                    self.rac[i] = [S[0], 0]
                     i += 1
-        if i == 0:
+        if i == 0:  # Si aucune racines
             self.rac = None
 
     def rot(self, teta):
-        """Méthode à utiliser pour effectuer une rotation du rectangle."""
+        """Utiliser. Effectue une rotation du rectangle avec translation."""
         self.__init__()
         self._rotation(teta)
         self._translation()
@@ -98,8 +101,8 @@ class Rectangle:
     @property
     def coords(self):
         """Renvoie un array avec les coordonnées de chaque point du rectangle triées dans le 
-        sens antihoraire"""
-        if type(self.rac) == type(None):
+        sens antihoraire avec les racines"""
+        if type(self.rac) == type(None):    # Si pas de racines il n'y a que self.aff
             return self.aff
         else:
             coords = np.zeros((6,2))
@@ -149,33 +152,34 @@ class Rectangle:
     
     @property
     def center_of_mass(self):
-        """Renvoie un tuple qui correspond au centre de gravité du rectangle"""
+        """Renvoie un tuple qui correspond au centre de gravité du rectangle de coordonnée (X, Z)"""
         X = self.aff[:,0]
         Z = self.aff[:,1]
         return sum(X)/len(X), sum(Z)/len(Z)
     
     @property
     def center_of_buoyancy(self):
-        """Renvoie un tuple qui correspond au centre de buoyancy du rectangle"""
+        """Renvoie un tuple qui correspond au centre de buoyancy du rectangle de coordonnée (X, Z)"""
         immerg = self.pol_immerg
         aire = self.aire_immerg
         if immerg.shape == (0,):
-            return 0, 0
+            return 0, 0     # Cas qui ne sera jamais visble quand on affiche
         X = list(immerg[:,0])
         Z = list(immerg[:,1])
         X += X[:1]
         Z += Z[:1]
         s = 0
         t = 0
+        # Formule de calcul de centre gravités d'un polynome simple quelconque
         for k in range(0, len(X)-1):
             s += (X[k] + X[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
             t += (Z[k] + Z[k+1])*(X[k]*Z[k+1]-X[k+1]*Z[k])
         return 1/(6*aire)*s, 1/(6*aire)*t
 
-## Fonction utile à la calsse Rectangle
+## Fonction utile à la classe Rectangle
 
 def aire(pol):
-    """Calcul l'aire d'un polynome quelconque dont les points sont triés par arguments"""
+    """Calcul l'aire d'un polynome quelconque dont les points sont triés dans le sens antihoraire"""
     X = list(pol[:,0])
     Z = list(pol[:,1])
     X += X[:1]
