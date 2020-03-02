@@ -67,10 +67,9 @@ class Rectangle:
         None si solide complètement émergé."""
         # On récupère les coordonnés des points
         X, Z = self.X, self.Z
-        i = 0
-        if self.rac == None:    # Sinon erreur lors de l'assignation plus tard
-            self.rac = np.array([[-l/2, 0],
-                                [l/2, 0]])
+        i = 0   
+        self.rac = np.array([[-l/2, 0], # Sinon erreur lors de l'assignation plus tard
+                            [l/2, 0]])
 
         for j in range(len(Z) - 1):
             if Z[j]*Z[j+1] < 0: # On test si les coordonnées Z sont 2 à 2 de même signes
