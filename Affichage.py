@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from Calcul import *    # pylint: disable=unused-wildcard-import
+import scipy.optimize as so
 
 
 def init(rect):
@@ -88,14 +89,19 @@ def non_anim(rect, teta):
 
 
 def courbe_de_stabilite_statique():
-    X=np.linspace(0,np.pi/2) #abscisses de la courbe
+    X=np.linspace(0,np.pi) #abscisses de la courbe
     Y=[GZ(x) for x in X ]
+    MSIT=[fMSIT(teta) for teta in X]
+    AVS=so.newton(GZ,1)
     plt.plot(X,Y,label='courbe de stabilitée satique')
-    plt.plot([1,1],[0,8],"--")# verticale pour tangeante à l'origine
-    #plt.plot([0,1.5],[distance_Gmetacentre(),distance_Gmetacentre()],"--")  #Gm pour construire la tangeante à l'origine
-   # plt.plot([0,1],[0,distance_Gmetacentre()],label='tangeante à l origine') #tangeante à l'origine
-     #MSIT
+    #plt.plot([1,1],[0,12],"--")# verticale pour tangeante à l'origine
+    #plt.plot([0,1.5],[distance_Gmetacentre(0.001),distance_Gmetacentre(0.001)],"--") #Gm pour construire la tangeante à l origine
+    plt.plot([0,1],[0,distance_Gmetacentre(0.001)],label='tangeante à l origine') #tangeante à l'origine
+    plt.plot([0,np.pi],[0,0])
+    #plt.plot(X,MSIT,label='Module de stabilité initial transversal')
+    plt.title('courbe de stabilité statique')
     plt.plot(X,Y)
+    plt.plot([AVS],[0],"o",label='AVS') #Point AVS
     plt.xlabel('teta')
     plt.ylabel('GZ')
     plt.legend()

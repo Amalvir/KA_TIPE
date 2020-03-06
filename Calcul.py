@@ -6,13 +6,13 @@ import scipy.integrate as sc
 import scipy.optimize as sc
 
 # Constante
-b = 34  # profondeur sert pas dans l'animation mais pour le MSIT
-h = 9.5 # Hauteur
-l = 34  # Largeur
+b = 11.2*10**(-2)  # profondeur sert pas dans l'animation mais pour le MSIT
+h = 3.5*10**(-2) # Hauteur
+l = 11.2*10**(-2)  # Largeur
 robj = 0.7*10**3   # Masse volumique de l'objet en kg/m^3
 rofl = 10**3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
-I = b*h**3/12   # I est le moment quadratique du pavé
+I = l*b**3/12   # I est le moment quadratique du pavé lorsqu'il ne bouge pas
 A = h*l*robj/rofl # Aire immergée
 
 ## Définition de la classe Rectangle
@@ -190,116 +190,86 @@ def aire(pol):
 
 ## Fonction d'exploitation
 
-def distance_entreGC(teta,quoi=None):
+def distance_entreGC(teta):
     """renvoie la distance entre le centre de poussé et le centre de gravité"""
-    X ,Z = reel(rotation(teta))
-    x, z = immerg((X, Z), teta)
-    if quoi==None:
-        return np.sqrt((center_of_mass(x,z)[0]-center_of_mass(X,Z)[0])**2 + (center_of_mass(x,z)[1]-center_of_mass(X,Z)[1])**2)
+    R=Rectangle()
+    R.rot(teta)
+    return np.sqrt((R.center_of_buoyancy[0]-R.center_of_mass[0])**2 + (R.center_of_buoyancy[1]-R.center_of_mass[1])**2)
     
     
-    elif quoi==True:
-        return center_of_mass(x,z)[0]-center_of_mass(X,Z)[0]
-    elif quoi==False:
-        return center_of_mass(x,z)[1]-center_of_mass(X,Z)[1]
-
+    
 # MSIT=rofl*(I-Vc*a) 
-def fMSIT(teta):
-    return rofl*(I-(A*b*distance_entreGC(teta))) #G est au dessus de c donc on compte positivement la distance gc #On a besoin du moment quadratique du volume immergé
+def fMSIT(teta): #ATTENTION ne fonctionne que pour les petits angles
+    """Module de stabilité initiale tranversale"""
+    rect=Rectangle()
+    return rofl*(I(teta)-(A*b*distance_entreGC(teta))) #G est au dessus de c donc on compte positivement la distance gc 
 
+def I(teta):
+    """moment quadratique de la surface de flottaison"""
+    rect=Rectangle()
+    rect.rot(teta)
+    r1=rect.rac[1][0]
+    r2=rect.rac[0][0]
+    lp=abs(r1)+abs(r2)
+    return (lp*b**3/12)
 
-def aire_immerg(teta, a=i, ajust=0):
-    """Calcul l'aire de la partie immergée en fonction de l'angle teta"""
-    Rot = tri(rotation(teta, affichage=True,a=a, ajust=ajust) + racines(teta))
-    X, Y = immerg(reel(Rot), teta)
-
-    # X += X[:1]
-    # Y += Y[:1]
-    s = 0
-    for k in range(len(X)-1):
-        s = s + X[k]*Y[k+1] - X[k+1]*Y[k]
-        # On doit trouver 323
-    return 1/2*s
-
+def f_verification(teta):
+    r=Rectangle()
+    r.rot(teta)
+    
+ 
 def GZ(teta):
-    """Revoit le bras de levier entre le centre de masse en position initiale et le centre de masse en fonction de teta"""
-    A,B=reel(rotation(0)) #listes des abscisses et des ordonnées des coordonnées des sommets de notre rectangle initial
-    C,D=reel(rotation(teta)) #listes des abscisses et des ordonnées des coordonnées des sommets de notre rectangle avec un angle têta 
-    G=center_of_mass(A,B)
-    Z=center_of_mass(C,D)
-    return np.sqrt((Z[0]-G[0])**2+(Z[1]-G[1])**2)
+    """Revoit le bras de levier entre le centre de masse  et le centre de carène en fonction de teta"""
+    R=Rectangle()
+    
+    R.rot(teta)
+    G=R.center_of_mass
+    Z=R.center_of_buoyancy
+    return (G[0]-Z[0])
+    
 
 
-def metacentre(teta):
-    """renvoie la position du métacentre, cependant la position du métacentre n'est pas constante, on suppose que que c'est le cas pour le petits angles et on considère pi/65 comme un petit angle"""
-    #Ateta=np.pi/65
+   ##   def metacentre(teta):
+    #     """renvoie la position du métacentre, cependant la position du métacentre n'est pas constante, on suppose que que c'est le cas pour le petits angles et on considère pi/65 comme un petit angle"""
+    #     #Ateta=np.pi/65
+    #     r=Rectangle()
+    #     
+    #     G=r.center_of_mass
+    #     C=r.center_of_buoyancy
+    #     
+    #     r.rot(teta)
+    # 
+    #     Gp=r.center_of_mass
+    #     Cp=r.center_of_buoyancy
+    #     
+    #     coeff_dir=(Gp[1]-Cp[1])/(Gp[0]-Cp[0])
+    #     #On sait que la droite passant par G et C est d'équation x=0
+    #     #On sait que la droite passant par Gp, Cp est d'equation y=coeff_dir*x+b
+    #     #L'ordonnée à l'origine de (Gp,Cp) correspond à l'ordonnée du métacentre
+    #     ym=Gp[1]-coeff_dir*Gp[0]
+    #     
+    #     return (ym)
+    # 
+    # 
+        
+def distance_Gmetacentre(teta):
 
-    A,B=reel(rotation(0))
-    C,D=reel(rotation(teta))
-    #Coordonnées du centre de gravité au repos et du centre de gravité avec téta
-    G=center_of_mass(A,B)
-    Gp=center_of_mass(C,D)
-
-    c1,c2=immerg((A,B),0)
-    c3,c4=immerg((C,D),teta)
-
-    c1,c2=immerg((A,B), teta)
-    c3,c4=immerg((C,D),teta)
+    return GZ(teta)/(np.sin(teta))
 
 
-    #Coordonnées du centre de carène au repos et du centre de carène avec téta
-    C=[c1[0],c2[0]]
-    Cp=[c3[0],c4[0]]
-    coeff_dir=(Gp[1]-Cp[1])/(Gp[0]-Cp[0])
-    #On sait que la droite passant par G et C est d'équation x=0
-    #On sait que la droite passant par Gp, Cp est d'equation y=coeff_dir*x+b
-    #L'ordonnée à l'origine de (Gp,Cp) correspond à l'ordonnée du métacentre
-    ym=Gp[1]-coeff_dir*Gp[0]
-    return (ym)
-
+ # def angle_de_deplacement(m,y):
+ #    """renvoie l'angle de déplacement du flotteur pour le rajout d'un poids P disposé à l'abscisse y du centre"""
+ #    return np.arctan(m*g*y/)
+    
+def Mt (teta): #•ATTENTION ne fonctionne que pour les petits angles !!!
+    """Couple de redressement"""
+    return fMSIT(teta)*np.sin(teta)
+    
 
     
-def distance_Gmetacentre(teta):
-    A,B=reel(rotation(0))
-    G=center_of_mass(A,B)
-    return abs(metacentre(teta)+G[1])
-    # C=[c1[0],c2[0]]
-    # Cp=[c3[0],c4[0]]
-
-# X=np.linspace(0,np.pi/2)
-# Y=[metacentre(x) for x in X]
+# X=np.linspace(0,np.pi/8)
+# Y=[fMSIT(teta) for teta in X]
 # plt.plot(X,Y)
 # plt.show()
-#
-def fonct(x,y):
-        return (x**2+y**2)
-
-def calcul_du_moment_quadratique(teta):
-    
-    x,y=immerg(teta)
-    if len(x)==3:
-        def x1 (y):
-            return x[1]+(y-y[1])*(x[0]-x[1])/(y[0]-y[1])
-        def x2(y):
-            return x[1]+(y-y[1])*(x[2]-x[1])/(y[2]-y[1])
-        
-        def int(y):
-            return y**2*(x2(y)-x1(y))+ x2(y)**3/3-x1(y)**3/3 
-        
-        return sc.quad(int,y[1],0)
-        
-    if len(x)==5:
-        #Partie inferieure de l'intégrale
-        def x1 (y):
-            return x[2]+(y-y[2])*(x[1]-x[2])/(y[1]-y[2])
-        def x2(y):
-            return x[2]+(y-y[2])*(x[3]-x[2])/(y[3]-y[2])
-        
-        def int(y):
-            return y**2*(x2(y)-x1(y))+ x2(y)**3/3-x1(y)**3/3 
-            
-        
-            
-        #return sc.quad(int,y[2],y[1])+
-    
-        
+# # 
+#         
