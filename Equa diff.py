@@ -26,7 +26,7 @@ def tetapp(Y,t):
     R.rot(teta)
     Projection_GCx=R.center_of_mass[0]-R.center_of_buoyancy[0]
     return np.array([tetap,-(rofl*aire_immergee*g*b*Projection_GCx)/J])
-    # return np.array([tetap,-(rofl*aire_immergee*g*b*distance_entreGC(teta)*np.sin(teta))/J])
+    #return np.array([tetap,-(rofl*aire_immergee*g*b*distance_entreGC(teta)*np.sin(teta))/J])
     
 t=np.linspace(0,1,100)
 Y0=np.array([angle_de_dep,0])
@@ -42,6 +42,33 @@ plt.legend()
 plt.show()
 
 
+import numpy as np
+from scipy import interpolate
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+
+##Pour extraire les informations on 
+
+def modele(t, C, f, phi):
+    return C*np.sin(2*np.pi*f*t + phi)
+
+
+    
+    X = np.linspace(data[0,0], data[-1,0], 1000)
+    popt, pcov = curve_fit(modele, data[:,0], data[:,1], p0=[0, 0, 0, 1, 2, 0])
+    C, f, phi = popt
+
+
+    print(i, ":", "{} + {}*t + {}*sin({}*t + {})".format(A, B, C, tau, f, phi))
+    np.savetxt("sortie{}.csv".format(i), data, delimiter=";")
+
+    plt.plot(X, amorti(X, A, B, C, tau, f, phi), label="modèle")
+    plt.plot(data[:,0], data[:,1], 'o', label="Point originaux")
+
+    plt.legend()
+    plt.show()
+    print("f=",f)
 
 # test=np.linspace(-np.pi,np.pi,100)
 # test_Y=[distance_entreGC(x) for x in test]
