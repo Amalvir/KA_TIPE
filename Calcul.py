@@ -6,11 +6,11 @@ import scipy.integrate as sc
 import scipy.optimize as sc
 
 # Constante
-b = 11.2*10**(-2)  # profondeur sert pas dans l'animation mais pour le MSIT
-h = 3.5*10**(-2) # Hauteur
-l = 11.2*10**(-2)  # Largeur
-robj = 0.7*10**3   # Masse volumique de l'objet en kg/m^3
-rofl = 10**3   # Masse volumique du fluide kg/m^3
+b = 11.2*1e-2  # profondeur sert pas dans l'animation mais pour le MSIT
+h = 3.5*1e-2 # Hauteur
+l = 11.2*1e-2  # Largeur
+robj = 0.7*1e3   # Masse volumique de l'objet en kg/m^3
+rofl = 1e3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = l*b**3/12   # I est le moment quadratique du pavé lorsqu'il ne bouge pas
 A = h*l*robj/rofl # Aire immergée
@@ -53,7 +53,7 @@ class Rectangle:
         """Ne pas utiliser. Ajuste la hauteur du rectangle pour que aire immérgée = A"""
         a, b = -l/2, l/2
         # Dichotomie on cherche le 0 de la fonction __f
-        while abs(b-a) > 0.01:
+        while abs(b-a) > 0.0001:
             c = (a+b)/2
             if self.__f(a)*self.__f(c) <= 0:
                 b = c
