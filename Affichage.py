@@ -37,7 +37,7 @@ def points(rect):
 def affichage(teta):
     """Affiche une animation si teta est une liste et une image si teta est un nombre."""
     fig, ax = plt.subplots(1, figsize=[7, 7])
-    ax.axis([-20, 20, -20, 20])
+    ax.axis([-2*l, 2*l, -2*l, 2*l])
     rect = Rectangle()
     if isinstance(teta, list) or isinstance(teta, np.ndarray):
         anim(teta, rect, fig, ax)
