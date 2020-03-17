@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 b = 11.2*10**(-2)  # profondeur sert pas dans l'animation mais pour le MSIT
 h = 3.5*10**(-2)
 l = 11.2*10**(-2)
-robj = 0.9*10**3   # Masse volumique de l'objet en kg/m^3
+robj = 0.8*10**3   # Masse volumique de l'objet en kg/m^3
 g=9.81
 angle_de_dep=-np.pi/65
 aire_immergee=h*l*robj/rofl
@@ -26,9 +26,9 @@ def tetapp(Y,t):
     R.rot(teta)
     Projection_GCx=R.center_of_mass[0]-R.center_of_buoyancy[0]
     return np.array([tetap,-(rofl*aire_immergee*g*b*Projection_GCx)/J])
-    #return np.array([tetap,-(rofl*aire_immergee*g*b*distance_entreGC(teta)*np.sin(teta))/J])
+    #▓return np.array([tetap,-(rofl*aire_immergee*g*b*distance_entreGC(teta)*np.sin(teta))/J])
     
-t=np.linspace(0,1,100)
+t=np.linspace(0,2,200)
 Y0=np.array([angle_de_dep,0])
 teta=odeint(tetapp,Y0,t)[:,0]
 tetap=odeint(tetapp,Y0,t)[:,1]
@@ -39,7 +39,7 @@ plt.title('Tracé de l angle teta en fonction du temps')
 plt.xlabel('temps')
 plt.ylabel('angle')
 plt.legend()
-plt.show()
+
 
 
 import numpy as np
@@ -54,21 +54,21 @@ def modele(t, C, f, phi):
     return C*np.sin(2*np.pi*f*t + phi)
 
 
-    
-    X = np.linspace(data[0,0], data[-1,0], 1000)
-    popt, pcov = curve_fit(modele, data[:,0], data[:,1], p0=[0, 0, 0, 1, 2, 0])
-    C, f, phi = popt
+
+X = t
+popt, pcov = curve_fit(modele, t, teta, p0=[0.01, 2.5, 0])
+C, f, phi = popt
 
 
-    print(i, ":", "{} + {}*t + {}*sin({}*t + {})".format(A, B, C, tau, f, phi))
-    np.savetxt("sortie{}.csv".format(i), data, delimiter=";")
+print( "{}*sin({}*t + {})".format(C, f, phi))
 
-    plt.plot(X, amorti(X, A, B, C, tau, f, phi), label="modèle")
-    plt.plot(data[:,0], data[:,1], 'o', label="Point originaux")
 
-    plt.legend()
-    plt.show()
-    print("f=",f)
+plt.plot(X, modele(X, C, f, phi), label="modèle")
+
+
+plt.legend()
+plt.show()
+print("f=",f)
 
 # test=np.linspace(-np.pi,np.pi,100)
 # test_Y=[distance_entreGC(x) for x in test]

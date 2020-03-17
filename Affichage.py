@@ -106,6 +106,7 @@ def courbe_de_stabilite_statique():
     plt.ylabel('GZ')
     plt.legend()
     plt.show()
+    return AVS
 
 #pb de positionnement du métacentre 
 def Aff_metacentre_teta():
