@@ -6,11 +6,11 @@ import scipy.integrate as sc
 import scipy.optimize as sc
 
 # Constante
-b = 34 #11.2*1e-2  # profondeur sert pas dans l'animation mais pour le MSIT
-h = 9.5 #3.5*1e-2 # Hauteur
-l = 34 #11.2*1e-2  # Largeur
+b =11.2*1e-2  # profondeur sert pas dans l'animation mais pour le MSIT
+h =3.5*1e-2 # Hauteur
+l =11.2*1e-2  # Largeur
 g=9.81 #Accelération de la pesenteur
-robj = 397.0132   # Masse volumique de l'objet en kg/m^3
+robj =813 #397.0132 #813  # Masse volumique de l'objet en kg/m^3
 rofl = 1e3   # Masse volumique du fluide kg/m^3
 i = robj/rofl*h   # i hauteur immergée de l'objet d'après archimède:
 I = l*b**3/12   # I est le moment quadratique du pavé lorsqu'il ne bouge pas
@@ -268,11 +268,11 @@ def Mt (teta): #•ATTENTION ne fonctionne que pour les petits angles !!!
     
 
     
-# X=np.linspace(0,np.pi/120)
-# Z=[133000,133000]
+# X=np.linspace(0,np.pi/30)
+# Z=[0.01*0.05,0.01*0.05]
 # Y=[Mt(teta) for teta in X]
 # plt.plot(X,Y)
-# plt.plot([0,np.pi/120],Z)
+# plt.plot([0,np.pi/30],Z)
 # plt.show()
 
         

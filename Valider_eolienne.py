@@ -17,8 +17,9 @@ dis=27       #en m
 
 ##Tracé de la courbe de stabilité statique pour l'éolienne en taille réelle
 AVS=courbe_de_stabilite_statique()
-#AVS=1.5707963267948966
-
+#AVS=1.5707963267948966=pi/2
+#Angle of vanishing stability plutô élévé: sécurité; il faut que le flotteur soit à 90° avant de tendre vers la position retournée comme position stable 
+#bateau à voile Giro AVS 128° (lui il bouge pas l'éolienne)
 
 ##Calcul de l'angle de tangage dû au poids de l'éolienne
 def angle_recherche(teta):
@@ -39,6 +40,7 @@ angle=so.newton(angle_recherche,np.pi/200)
 
 #pour poids=133000 et dis de 27m
 #angle=2.091996172244318 deg
+#Conclusion ça penche un peu quand même mais bon, modélisation sommaire
 
 ##Calcul de l'energie nécéssaire au chavirement:
 def fonc_energie(teta):
